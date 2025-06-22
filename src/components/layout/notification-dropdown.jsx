@@ -153,25 +153,25 @@ export function NotificationDropdown() {
 
     switch (subtype) {
       case "new_lead":
-        return <UserPlus className={`${iconClass} text-blue-600`} />
+        return <UserPlus className={`${iconClass} text-blue-600 dark:text-blue-400`} />
       case "sms":
-        return <MessageSquare className={`${iconClass} text-green-600`} />
+        return <MessageSquare className={`${iconClass} text-green-600 dark:text-green-400`} />
       case "email":
-        return <Mail className={`${iconClass} text-purple-600`} />
+        return <Mail className={`${iconClass} text-purple-600 dark:text-purple-400`} />
       case "meeting":
-        return <Calendar className={`${iconClass} text-orange-600`} />
+        return <Calendar className={`${iconClass} text-orange-600 dark:text-orange-400`} />
       case "activity":
-        return <Activity className={`${iconClass} text-indigo-600`} />
+        return <Activity className={`${iconClass} text-indigo-600 dark:text-indigo-400`} />
       case "campaign":
-        return <Megaphone className={`${iconClass} text-pink-600`} />
+        return <Megaphone className={`${iconClass} text-pink-600 dark:text-pink-400`} />
       case "success":
-        return <CheckCircle className={`${iconClass} text-green-600`} />
+        return <CheckCircle className={`${iconClass} text-green-600 dark:text-green-400`} />
       case "warning":
-        return <AlertTriangle className={`${iconClass} text-yellow-600`} />
+        return <AlertTriangle className={`${iconClass} text-yellow-600 dark:text-yellow-400`} />
       case "phone":
-        return <Bell className={`${iconClass} text-cyan-600`} />
+        return <Bell className={`${iconClass} text-cyan-600 dark:text-cyan-400`} />
       default:
-        return <Bell className={`${iconClass} text-blue-600`} />
+        return <Bell className={`${iconClass} text-blue-600 dark:text-blue-400`} />
     }
   }
 
@@ -189,10 +189,10 @@ export function NotificationDropdown() {
 
       {/* Dropdown Content */}
       {isOpen && (
-        <div className="absolute right-0 top-12 w-96 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+        <div className="absolute right-0 top-12 w-96 bg-card border border-border rounded-lg shadow-lg z-50">
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Notifications</h3>
+              <h3 className="font-semibold text-foreground">Notifications</h3>
               <div className="flex items-center space-x-2">
                 <Button
                   variant="ghost"

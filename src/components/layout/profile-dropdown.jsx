@@ -1,12 +1,19 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '@/components/auth/auth-provider'
+// import { useAuth } from '@/store/auth/authHooks'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { User, Settings, LogOut } from 'lucide-react'
+import { useSelector } from 'react-redux'
+import useAuth from '@/hooks/useAuth'
+export function ProfileDropdown() {
+  const user = useSelector((state) => state.auth.user)
+  console.log("🚀 ~ ProfileDropdown ~ user:", user)
 
-export function ProfileDropdown({ user }) {
-  const { logout } = useAuth()
+  const { signOut } = useAuth()
+  const logout = () => {
+    signOut()
+  }
 
   const handleLogout = () => {
     logout()
@@ -18,7 +25,7 @@ export function ProfileDropdown({ user }) {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src="/placeholder.svg" alt={user?.firstName || 'User'} />
-            <AvatarFallback className="bg-blue-600 text-white">
+            <AvatarFallback className="bg-primary text-primary-foreground">
               {user?.firstName?.charAt(0) || 'U'}
             </AvatarFallback>
           </Avatar>

@@ -45,6 +45,7 @@ export const authApi = {
 
     // Check if user already exists
     const existingUser = {}
+    
     if (existingUser) {
       return {
         success: false,

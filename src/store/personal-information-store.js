@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { personalInformationApiService } from "@/services/personal-information-api"
+import {
   PersonalInformation,
   CreateEmailRequest,
   CreatePhoneRequest,

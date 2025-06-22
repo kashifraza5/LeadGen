@@ -8,30 +8,31 @@ import Checkbox from "@/components/ui/checkbox"
 import Separator from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Mail, Lock, Building2, AlertCircle, Shield, Users, TrendingUp, Star } from "lucide-react"
-import { useAuth } from "@/components/auth/auth-provider"
+// import { useAuth } from "@/store/auth/authHooks"
 import { useNavigate } from "react-router-dom"
+import useAuth from "@/hooks/useAuth"
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState("")
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false,
   })
-
+  
+  const { signIn, authenticated, loading } = useAuth()
   const navigate = useNavigate()
-
-  const { login, isLoading } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError("")
 
-    const result = await login(formData.email, formData.password, formData.rememberMe)
-    if (result.success) {
-      navigate("/")
-    } else {
-      setError(result.message || "Login failed. Please try again.")
+    const result = await signIn({ 
+      email: formData.email, 
+      password: formData.password, 
+      rememberMe: formData.rememberMe 
+    })
+    
+    if (result.status === 'success') {
+      navigate("/dashboard")
     }
   }
 
@@ -161,12 +162,12 @@ export default function LoginPage() {
               </Alert>
 
               {/* Error Message */}
-              {error && (
+              {/* {error && (
                 <Alert variant="destructive" className="bg-red-50 border-red-200">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
-              )}
+              )} */}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Email Field */}
@@ -185,7 +186,6 @@ export default function LoginPage() {
                       onChange={handleInputChange}
                       className="pl-12 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl"
                       required
-                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -206,13 +206,11 @@ export default function LoginPage() {
                       onChange={handleInputChange}
                       className="pl-12 pr-12 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl"
                       required
-                      disabled={isLoading}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors"
-                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
@@ -229,7 +227,6 @@ export default function LoginPage() {
                       onCheckedChange={(checked) =>
                         setFormData((prev) => ({ ...prev, rememberMe: checked }))
                       }
-                      disabled={isLoading}
                       className="border-gray-300"
                     />
                     <Label htmlFor="rememberMe" className="text-gray-700">
@@ -248,16 +245,9 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
-                  disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Signing in...</span>
-                    </div>
-                  ) : (
-                    "Sign in to your account"
-                  )}
+                  {/* {loading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : "Sign in to your account"} */}
+                  Sign in
                 </Button>
               </form>
 
@@ -276,7 +266,6 @@ export default function LoginPage() {
                 <Button
                   variant="outline"
                   className="h-12 border-gray-200 hover:bg-gray-50 rounded-xl transition-colors"
-                  disabled={isLoading}
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path
@@ -300,7 +289,6 @@ export default function LoginPage() {
                 <Button
                   variant="outline"
                   className="h-12 border-gray-200 hover:bg-gray-50 rounded-xl transition-colors"
-                  disabled={isLoading}
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path
@@ -312,7 +300,6 @@ export default function LoginPage() {
                 <Button
                   variant="outline"
                   className="h-12 border-gray-200 hover:bg-gray-50 rounded-xl transition-colors"
-                  disabled={isLoading}
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">
                     <path

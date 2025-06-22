@@ -1,254 +1,298 @@
-// Financial Overview Types
-export interface FinancialOverview {
-  netWorth: {
-    current: number
-    change: number
-    changePercentage: number
-    lastUpdated: string
-  }
-  monthlyIncome: {
-    amount: number
-    afterTax: boolean
-  }
-  monthlyExpenses: {
-    amount: number
-    period: string
-  }
-  retirementReadiness: {
-    percentage: number
-    targetAge: number
-  }
-  financialSummary: {
-    totalAssets: number
-    totalLiabilities: number
-    liquidAssets: number
-    investmentAssets: number
-    debtToIncomeRatio: number
-    savingsRate: number
-  }
-  financialHealth: {
-    status: "Excellent" | "Good" | "Fair" | "Poor"
-    description: string
-  }
-  recentActivities: FinancialActivity[]
-  goalProgress: GoalProgress[]
-}
+/**
+ * Financial Overview Types
+ */
 
-export interface FinancialActivity {
-  id: string
-  type: string
-  description: string
-  date: string
-  icon: string
-  color: string
-}
+/**
+ * @typedef {Object} FinancialOverview
+ * @property {Object} netWorth - Net worth information
+ * @property {number} netWorth.current - Current net worth
+ * @property {number} netWorth.change - Change in net worth
+ * @property {number} netWorth.changePercentage - Percentage change
+ * @property {string} netWorth.lastUpdated - Last updated timestamp
+ * @property {Object} monthlyIncome - Monthly income information
+ * @property {number} monthlyIncome.amount - Income amount
+ * @property {boolean} monthlyIncome.afterTax - Whether amount is after tax
+ * @property {Object} monthlyExpenses - Monthly expenses information
+ * @property {number} monthlyExpenses.amount - Expenses amount
+ * @property {string} monthlyExpenses.period - Expense period
+ * @property {Object} retirementReadiness - Retirement readiness information
+ * @property {number} retirementReadiness.percentage - Readiness percentage
+ * @property {number} retirementReadiness.targetAge - Target retirement age
+ * @property {Object} financialSummary - Financial summary information
+ * @property {number} financialSummary.totalAssets - Total assets
+ * @property {number} financialSummary.totalLiabilities - Total liabilities
+ * @property {number} financialSummary.liquidAssets - Liquid assets
+ * @property {number} financialSummary.investmentAssets - Investment assets
+ * @property {number} financialSummary.debtToIncomeRatio - Debt to income ratio
+ * @property {number} financialSummary.savingsRate - Savings rate
+ * @property {Object} financialHealth - Financial health status
+ * @property {'Excellent'|'Good'|'Fair'|'Poor'} financialHealth.status - Health status
+ * @property {string} financialHealth.description - Health description
+ * @property {FinancialActivity[]} recentActivities - Recent financial activities
+ * @property {GoalProgress[]} goalProgress - Goal progress information
+ */
 
-export interface GoalProgress {
-  name: string
-  percentage: number
-  color: string
-}
+/**
+ * @typedef {Object} FinancialActivity
+ * @property {string} id - Activity ID
+ * @property {string} type - Activity type
+ * @property {string} description - Activity description
+ * @property {string} date - Activity date
+ * @property {string} icon - Activity icon
+ * @property {string} color - Activity color
+ */
 
-// Income & Expenses Types
-export interface IncomeExpenses {
-  incomeSources: IncomeSource[]
-  expenseCategories: ExpenseCategory[]
-  cashFlowAnalysis: CashFlowAnalysis
-  totalMonthlyIncome: number
-  totalMonthlyExpenses: number
-}
+/**
+ * @typedef {Object} GoalProgress
+ * @property {string} name - Goal name
+ * @property {number} percentage - Progress percentage
+ * @property {string} color - Progress color
+ */
 
-export interface IncomeSource {
-  id: string
-  name: string
-  description: string
-  amount: number
-  frequency: "monthly" | "annual"
-}
+/**
+ * Income & Expenses Types
+ */
 
-export interface ExpenseCategory {
-  id: string
-  name: string
-  description: string
-  amount: number
-  frequency: "monthly" | "annual"
-}
+/**
+ * @typedef {Object} IncomeExpenses
+ * @property {IncomeSource[]} incomeSources - Income sources
+ * @property {ExpenseCategory[]} expenseCategories - Expense categories
+ * @property {CashFlowAnalysis} cashFlowAnalysis - Cash flow analysis
+ * @property {number} totalMonthlyIncome - Total monthly income
+ * @property {number} totalMonthlyExpenses - Total monthly expenses
+ */
 
-export interface CashFlowAnalysis {
-  monthlyIncome: number
-  monthlyExpenses: number
-  monthlySurplus: number
-  surplusAllocation: SurplusAllocation[]
-}
+/**
+ * @typedef {Object} IncomeSource
+ * @property {string} id - Source ID
+ * @property {string} name - Source name
+ * @property {string} description - Source description
+ * @property {number} amount - Income amount
+ * @property {'monthly'|'annual'} frequency - Income frequency
+ */
 
-export interface SurplusAllocation {
-  category: string
-  amount: number
-  percentage: number
-  color: string
-}
+/**
+ * @typedef {Object} ExpenseCategory
+ * @property {string} id - Category ID
+ * @property {string} name - Category name
+ * @property {string} description - Category description
+ * @property {number} amount - Expense amount
+ * @property {'monthly'|'annual'} frequency - Expense frequency
+ */
 
-// Assets & Liabilities Types
-export interface AssetsLiabilities {
-  assets: AssetCategory[]
-  liabilities: LiabilityCategory[]
-  totalAssets: number
-  totalLiabilities: number
-  netWorth: number
-  netWorthTrend: NetWorthTrendData[]
-}
+/**
+ * @typedef {Object} CashFlowAnalysis
+ * @property {number} monthlyIncome - Monthly income
+ * @property {number} monthlyExpenses - Monthly expenses
+ * @property {number} monthlySurplus - Monthly surplus
+ * @property {SurplusAllocation[]} surplusAllocation - Surplus allocation
+ */
 
-export interface AssetCategory {
-  id: string
-  name: string
-  totalValue: number
-  items: AssetItem[]
-}
+/**
+ * @typedef {Object} SurplusAllocation
+ * @property {string} category - Allocation category
+ * @property {number} amount - Allocation amount
+ * @property {number} percentage - Allocation percentage
+ * @property {string} color - Allocation color
+ */
 
-export interface AssetItem {
-  id: string
-  name: string
-  description?: string
-  value: number
-}
+/**
+ * Assets & Liabilities Types
+ */
 
-export interface LiabilityCategory {
-  id: string
-  name: string
-  totalValue: number
-  items: LiabilityItem[]
-}
+/**
+ * @typedef {Object} AssetsLiabilities
+ * @property {AssetCategory[]} assets - Asset categories
+ * @property {LiabilityCategory[]} liabilities - Liability categories
+ * @property {number} totalAssets - Total assets
+ * @property {number} totalLiabilities - Total liabilities
+ * @property {number} netWorth - Net worth
+ * @property {NetWorthTrendData[]} netWorthTrend - Net worth trend data
+ */
 
-export interface LiabilityItem {
-  id: string
-  name: string
-  description?: string
-  value: number
-  interestRate?: number
-  term?: string
-}
+/**
+ * @typedef {Object} AssetCategory
+ * @property {string} id - Category ID
+ * @property {string} name - Category name
+ * @property {number} totalValue - Total value
+ * @property {AssetItem[]} items - Asset items
+ */
 
-export interface NetWorthTrendData {
-  date: string
-  value: number
-}
+/**
+ * @typedef {Object} AssetItem
+ * @property {string} id - Item ID
+ * @property {string} name - Item name
+ * @property {string} [description] - Item description
+ * @property {number} value - Item value
+ */
 
-// Goals & Retirement Types
-export interface GoalsRetirement {
-  retirementPlanning: RetirementPlanning
-  retirementAccounts: RetirementAccount[]
-  financialGoals: FinancialGoal[]
-  retirementIncomeStrategy: RetirementIncomeStrategy
-}
+/**
+ * @typedef {Object} LiabilityCategory
+ * @property {string} id - Category ID
+ * @property {string} name - Category name
+ * @property {number} totalValue - Total value
+ * @property {LiabilityItem[]} items - Liability items
+ */
 
-export interface RetirementPlanning {
-  currentAge: number
-  targetRetirementAge: number
-  yearsToRetirement: number
-  currentRetirementAssets: number
-  monthlyContributions: number
-  projectedAtRetirement: number
-  retirementReadiness: {
-    percentage: number
-    monthlyIncomeGoal: number
-    projectedMonthlyIncome: number
-  }
-}
+/**
+ * @typedef {Object} LiabilityItem
+ * @property {string} id - Item ID
+ * @property {string} name - Item name
+ * @property {string} [description] - Item description
+ * @property {number} value - Item value
+ * @property {number} [interestRate] - Interest rate
+ * @property {string} [term] - Loan term
+ */
 
-export interface RetirementAccount {
-  id: string
-  name: string
-  institution: string
-  balance: number
-  type: "traditional" | "roth" | "401k" | "pension"
-}
+/**
+ * @typedef {Object} NetWorthTrendData
+ * @property {string} date - Trend date
+ * @property {number} value - Net worth value
+ */
 
-export interface FinancialGoal {
-  id: string
-  name: string
-  description: string
-  targetAmount: number
-  currentAmount: number
-  targetDate: string
-  status: "in_progress" | "completed" | "paused"
-  percentage: number
-}
+/**
+ * Goals & Retirement Types
+ */
 
-export interface RetirementIncomeStrategy {
-  projectedMonthlyIncome: IncomeSource[]
-  withdrawalStrategy: string[]
-  totalProjectedIncome: number
-}
+/**
+ * @typedef {Object} GoalsRetirement
+ * @property {RetirementPlanning} retirementPlanning - Retirement planning
+ * @property {RetirementAccount[]} retirementAccounts - Retirement accounts
+ * @property {FinancialGoal[]} financialGoals - Financial goals
+ * @property {RetirementIncomeStrategy} retirementIncomeStrategy - Retirement income strategy
+ */
 
-// Investment Portfolio Types
-export interface InvestmentPortfolio {
-  portfolioSummary: PortfolioSummary
-  investmentAccounts: InvestmentAccount[]
-  topHoldings: Holding[]
-  recommendations: InvestmentRecommendation[]
-  assetAllocation: AssetAllocation[]
-}
+/**
+ * @typedef {Object} RetirementPlanning
+ * @property {number} currentAge - Current age
+ * @property {number} targetRetirementAge - Target retirement age
+ * @property {number} yearsToRetirement - Years to retirement
+ * @property {number} currentRetirementAssets - Current retirement assets
+ * @property {number} monthlyContributions - Monthly contributions
+ * @property {number} projectedAtRetirement - Projected amount at retirement
+ * @property {Object} retirementReadiness - Retirement readiness
+ * @property {number} retirementReadiness.percentage - Readiness percentage
+ * @property {number} retirementReadiness.monthlyIncomeGoal - Monthly income goal
+ * @property {number} retirementReadiness.projectedMonthlyIncome - Projected monthly income
+ */
 
-export interface PortfolioSummary {
-  totalValue: number
-  ytdReturn: number
-  oneYearReturn: number
-  threeYearReturn: number
-  riskProfile: string
-}
+/**
+ * @typedef {Object} RetirementAccount
+ * @property {string} id - Account ID
+ * @property {string} name - Account name
+ * @property {string} institution - Financial institution
+ * @property {number} balance - Account balance
+ * @property {'traditional'|'roth'|'401k'|'pension'} type - Account type
+ */
 
-export interface InvestmentAccount {
-  id: string
-  name: string
-  type: string
-  institution: string
-  value: number
-  allocation: number
-  ytdReturn: number
-}
+/**
+ * @typedef {Object} FinancialGoal
+ * @property {string} id - Goal ID
+ * @property {string} name - Goal name
+ * @property {string} description - Goal description
+ * @property {number} targetAmount - Target amount
+ * @property {number} currentAmount - Current amount
+ * @property {string} targetDate - Target date
+ * @property {'in_progress'|'completed'|'paused'} status - Goal status
+ * @property {number} percentage - Goal progress percentage
+ */
 
-export interface Holding {
-  id: string
-  symbol: string
-  name: string
-  value: number
-  return: number
-}
+/**
+ * @typedef {Object} RetirementIncomeStrategy
+ * @property {IncomeSource[]} projectedMonthlyIncome - Projected monthly income sources
+ * @property {string[]} withdrawalStrategy - Withdrawal strategy
+ * @property {number} totalProjectedIncome - Total projected income
+ */
 
-export interface InvestmentRecommendation {
-  id: string
-  title: string
-  description: string
-  type: "rebalance" | "tax_optimization" | "contribution" | "diversification"
-  priority: "high" | "medium" | "low"
-  icon: string
-  color: string
-}
+/**
+ * Investment Portfolio Types
+ */
 
-export interface AssetAllocation {
-  category: string
-  percentage: number
-  value: number
-  color: string
-}
+/**
+ * @typedef {Object} InvestmentPortfolio
+ * @property {PortfolioSummary} portfolioSummary - Portfolio summary
+ * @property {InvestmentAccount[]} investmentAccounts - Investment accounts
+ * @property {Holding[]} topHoldings - Top holdings
+ * @property {InvestmentRecommendation[]} recommendations - Investment recommendations
+ * @property {AssetAllocation[]} assetAllocation - Asset allocation
+ */
 
-// API Response Types
-export interface FinancialOverviewResponse {
-  overview: FinancialOverview
-}
+/**
+ * @typedef {Object} PortfolioSummary
+ * @property {number} totalValue - Total portfolio value
+ * @property {number} ytdReturn - Year-to-date return
+ * @property {number} oneYearReturn - One year return
+ * @property {number} threeYearReturn - Three year return
+ * @property {string} riskProfile - Risk profile
+ */
 
-export interface IncomeExpensesResponse {
-  incomeExpenses: IncomeExpenses
-}
+/**
+ * @typedef {Object} InvestmentAccount
+ * @property {string} id - Account ID
+ * @property {string} name - Account name
+ * @property {string} type - Account type
+ * @property {string} institution - Financial institution
+ * @property {number} value - Account value
+ * @property {number} allocation - Account allocation
+ * @property {number} ytdReturn - Year-to-date return
+ */
 
-export interface AssetsLiabilitiesResponse {
-  assetsLiabilities: AssetsLiabilities
-}
+/**
+ * @typedef {Object} Holding
+ * @property {string} id - Holding ID
+ * @property {string} symbol - Stock symbol
+ * @property {string} name - Holding name
+ * @property {number} value - Holding value
+ * @property {number} return - Holding return
+ */
 
-export interface GoalsRetirementResponse {
-  goalsRetirement: GoalsRetirement
-}
+/**
+ * @typedef {Object} InvestmentRecommendation
+ * @property {string} id - Recommendation ID
+ * @property {string} title - Recommendation title
+ * @property {string} description - Recommendation description
+ * @property {'rebalance'|'tax_optimization'|'contribution'|'diversification'} type - Recommendation type
+ * @property {'high'|'medium'|'low'} priority - Recommendation priority
+ * @property {string} icon - Recommendation icon
+ * @property {string} color - Recommendation color
+ */
 
-export interface InvestmentPortfolioResponse {
-  investmentPortfolio: InvestmentPortfolio
-}
+/**
+ * @typedef {Object} AssetAllocation
+ * @property {string} category - Asset category
+ * @property {number} percentage - Allocation percentage
+ * @property {number} value - Allocation value
+ * @property {string} color - Allocation color
+ */
+
+/**
+ * API Response Types
+ */
+
+/**
+ * @typedef {Object} FinancialOverviewResponse
+ * @property {FinancialOverview} overview - Financial overview
+ */
+
+/**
+ * @typedef {Object} IncomeExpensesResponse
+ * @property {IncomeExpenses} incomeExpenses - Income and expenses data
+ */
+
+/**
+ * @typedef {Object} AssetsLiabilitiesResponse
+ * @property {AssetsLiabilities} assetsLiabilities - Assets and liabilities data
+ */
+
+/**
+ * @typedef {Object} GoalsRetirementResponse
+ * @property {GoalsRetirement} goalsRetirement - Goals and retirement data
+ */
+
+/**
+ * @typedef {Object} InvestmentPortfolioResponse
+ * @property {InvestmentPortfolio} investmentPortfolio - Investment portfolio data
+ */
+
+// Export empty object for module compatibility
+export default {}

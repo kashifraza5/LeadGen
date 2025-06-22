@@ -1,5 +1,6 @@
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/components/auth/auth-provider'
+import { useAuth } from '@/store/auth/authHooks'
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -11,10 +12,8 @@ export default function SignupPage() {
     companyName: '',
     phone: ''
   })
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
   
-  const { signup } = useAuth()
+  const { signup, isLoading, error } = useAuth()
   const navigate = useNavigate()
 
   const handleChange = (e) => {
@@ -26,26 +25,14 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsLoading(true)
-    setError('')
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
-      setIsLoading(false)
-      return
+      return // Error will be handled by the Redux store
     }
 
-    try {
-      const result = await signup(formData)
-      if (result.success) {
-        navigate('/')
-      } else {
-        setError(result.message || 'Signup failed')
-      }
-    } catch (err) {
-      setError('An unexpected error occurred')
-    } finally {
-      setIsLoading(false)
+    const result = await signup(formData)
+    if (result.meta.requestStatus === 'fulfilled') {
+      navigate('/')
     }
   }
 
@@ -77,6 +64,7 @@ export default function SignupPage() {
                   value={formData.firstName}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  disabled={isLoading}
                 />
               </div>
               <div>
@@ -91,6 +79,7 @@ export default function SignupPage() {
                   value={formData.lastName}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -107,6 +96,7 @@ export default function SignupPage() {
                 value={formData.email}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -121,6 +111,7 @@ export default function SignupPage() {
                 value={formData.companyName}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -134,6 +125,7 @@ export default function SignupPage() {
                 value={formData.phone}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -149,6 +141,7 @@ export default function SignupPage() {
                 value={formData.password}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -164,6 +157,7 @@ export default function SignupPage() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                disabled={isLoading}
               />
             </div>
           </div>

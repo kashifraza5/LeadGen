@@ -1,168 +1,159 @@
 import React, { useState, useEffect } from "react"
-import { Link, useLocation } from "react-router-dom"
-import {
-  LayoutDashboard,
-  Users,
-  Megaphone,
-  BarChart,
-  Settings,
-  Building,
-  ChevronDown,
-  ChevronRight,
-  Eye,
-  UserCheck,
-  CreditCard,
-  Palette,
-  Bell,
-  MapPin,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useLocation, useNavigate } from "react-router-dom"
+import { ChevronDown, ChevronRight } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import navigationConfig from "@/configs/navigation.config"
+import navigationIcon from "@/configs/navigation-icon.config.jsx"
+// import { useAuth } from "@/store/auth/authHooks"
 
 export function Sidebar() {
   const location = useLocation()
-  const [active, setActive] = useState(() => {
+  const navigate = useNavigate()
+  const user = {
+    firstName: "John",
+    lastName: "Doe"
+  }
+  
+  const [expandedItems, setExpandedItems] = useState(new Set())
+
+  const getActiveItem = () => {
     const pathname = location.pathname
-    if (pathname.includes("/company/")) {
-      if (pathname.includes("/company/overview") || pathname === "/company") return "company-overview"
-      if (pathname.includes("/company/employees")) return "company-employees"
-      if (pathname.includes("/company/territories")) return "company-territories"
-      if (pathname.includes("/company/permissions")) return "company-permissions"
-      if (pathname.includes("/company/billing")) return "company-billing"
-      if (pathname.includes("/company/branding")) return "company-branding"
-      if (pathname.includes("/company/analytics")) return "company-analytics"
-      if (pathname.includes("/company/notifications")) return "company-notifications"
-      return "company-overview"
-    } else if (pathname.includes("/campaigns/create")) {
-      return "campaigns"
-    } else if (pathname.includes("/campaigns")) {
-      return "campaigns"
-    } else if (pathname.includes("/leads")) {
-      return "leads"
+    
+    for (const item of navigationConfig) {
+      if (item.path === pathname) {
+        return item.key
+      }
+      if (item.subMenu) {
+        for (const subItem of item.subMenu) {
+          if (subItem.path === pathname) {
+            return subItem.key
+          }
+        }
+      }
     }
-    return "dashboard"
-  })
+    
+    return 'dashboard'
+  }
 
-  const [isCompanyInfoOpen, setIsCompanyInfoOpen] = useState(false)
+  const activeItem = getActiveItem()
 
+  // Auto-expand parent items when child is active
   useEffect(() => {
-    if (active.startsWith("company")) {
-      setIsCompanyInfoOpen(true)
+    const newExpandedItems = new Set()
+    
+    for (const item of navigationConfig) {
+      if (item.subMenu && item.subMenu.some(subItem => subItem.key === activeItem)) {
+        newExpandedItems.add(item.key)
+      }
     }
-  }, [active])
+    
+    setExpandedItems(newExpandedItems)
+  }, [activeItem])
 
-  const mainNavItems = [
-    { name: "Dashboard", icon: LayoutDashboard, href: "/", id: "dashboard" },
-    { name: "Campaigns", icon: Megaphone, href: "/campaigns", id: "campaigns" },
-    { name: "Leads", icon: Users, href: "/leads", id: "leads" },
-    { name: "Analytics", icon: BarChart, href: "/analytics", id: "analytics" },
-  ]
+  const toggleExpanded = (itemKey) => {
+    setExpandedItems(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(itemKey)) {
+        newSet.delete(itemKey)
+      } else {
+        newSet.add(itemKey)
+      }
+      return newSet
+    })
+  }
 
-  const settingsNavItems = [
-    { name: "Account Settings", icon: Settings, href: "/settings/account", id: "account-settings" },
-    { name: "Team Management", icon: Users, href: "/settings/team", id: "team-management" },
-  ]
+  const handleNavigation = (path) => {
+    console.log('Navigating to:', path)
+    navigate(path)
+  }
 
-  const companyInfoItems = [
-    { name: "Overview", icon: Eye, href: "/company/overview", id: "company-overview" },
-    { name: "Employees", icon: Users, href: "/company/employees", id: "company-employees" },
-    { name: "Territories", icon: MapPin, href: "/company/territories", id: "company-territories" },
-    { name: "Permissions", icon: UserCheck, href: "/company/permissions", id: "company-permissions" },
-    { name: "Billing", icon: CreditCard, href: "/company/billing", id: "company-billing" },
-    { name: "Branding", icon: Palette, href: "/company/branding", id: "company-branding" },
-    { name: "Analytics", icon: BarChart, href: "/company/analytics", id: "company-analytics" },
-    { name: "Notifications", icon: Bell, href: "/company/notifications", id: "company-notifications" },
-  ]
+  const renderNavItem = (item) => {
+    const isActive = activeItem === item.key
+    const isExpanded = expandedItems.has(item.key)
+    const hasSubMenu = item.subMenu && item.subMenu.length > 0
+
+    if (hasSubMenu) {
+      return (
+        <div key={item.key}>
+          <button
+            className={`${
+              isActive 
+                ? "bg-primary/10 text-primary border-r-2 border-primary" 
+                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            } flex items-center px-3 py-2 text-sm rounded-md cursor-pointer w-full transition-colors`}
+            onClick={() => toggleExpanded(item.key)}
+          >
+            <div className="flex items-center">
+              {navigationIcon[item.icon] && (
+                <span className="mr-3">{navigationIcon[item.icon]}</span>
+              )}
+              {item.title}
+            </div>
+            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          </button>
+
+          {isExpanded && (
+            <div className="ml-6 mt-1 space-y-1">
+              {item.subMenu.map((subItem) => {
+                const isSubActive = activeItem === subItem.key
+                return (
+                  <div
+                    key={subItem.key}
+                    className={`${
+                      isSubActive 
+                        ? "bg-primary/10 text-primary" 
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    } flex items-center px-3 py-2 text-sm rounded-md cursor-pointer transition-colors`}
+                    onClick={() => handleNavigation(subItem.path)}
+                  >
+                    {navigationIcon[subItem.icon] && (
+                      <span className="mr-3">{navigationIcon[subItem.icon]}</span>
+                    )}
+                    {subItem.title}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    return (
+      <div
+        key={item.key}
+        className={`${isActive ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-blue-50"} flex items-center px-3 py-2 text-sm rounded-md cursor-pointer`}
+        onClick={() => handleNavigation(item.path)}
+      >
+        {navigationIcon[item.icon] && (
+          <span className="mr-3">{navigationIcon[item.icon]}</span>
+        )}
+        {item.title}
+      </div>
+    )
+  }
 
   return (
-    <div className="w-[200px] border-r bg-blue-50 flex flex-col h-[100vh]">
+    <div className="w-[250px] border-r bg-blue-50 flex flex-col h-[100vh]">
       <div className="p-4 border-b">
         <h1 className="text-blue-600 font-bold text-lg">LeadGen CRM</h1>
       </div>
 
       <div className="flex-1 overflow-auto py-2">
         <nav className="space-y-1 px-2">
-          {mainNavItems.map((item) => (
-            <Link
-              key={item.id}
-              to={item.href}
-              className={cn(
-                "flex items-center px-3 py-2 text-sm rounded-md",
-                active === item.id ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-blue-50",
-              )}
-              onClick={() => setActive(item.id)}
-            >
-              <item.icon className="mr-3 h-5 w-5" />
-              {item.name}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Company Info with dropdown */}
-        <div>
-          <button
-            className={cn(
-              "flex items-center justify-between w-full px-3 py-2 text-sm rounded-md",
-              active.startsWith("company") ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-blue-50",
-            )}
-            onClick={() => setIsCompanyInfoOpen(!isCompanyInfoOpen)}
-          >
-            <div className="flex items-center">
-              <Building className="mr-3 h-5 w-5" />
-              Company Info
-            </div>
-            {isCompanyInfoOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          </button>
-
-          {isCompanyInfoOpen && (
-            <div className="ml-6 mt-1 space-y-1">
-              {companyInfoItems.map((item) => (
-                <Link
-                  key={item.id}
-                  to={item.href}
-                  className={cn(
-                    "flex items-center px-3 py-2 text-sm rounded-md",
-                    active === item.id ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-blue-50",
-                  )}
-                  onClick={() => setActive(item.id)}
-                >
-                  <item.icon className="mr-3 h-4 w-4" />
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="px-4 py-3 mt-6">
-          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">SETTINGS</h3>
-        </div>
-
-        <nav className="space-y-1 px-2">
-          {settingsNavItems.map((item) => (
-            <Link
-              key={item.id}
-              to={item.href}
-              className={cn(
-                "flex items-center px-3 py-2 text-sm rounded-md",
-                active === item.id ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-blue-50",
-              )}
-              onClick={() => setActive(item.id)}
-            >
-              <item.icon className="mr-3 h-5 w-5" />
-              {item.name}
-            </Link>
-          ))}
+          {navigationConfig.map(renderNavItem)}
         </nav>
       </div>
 
       <div className="p-4 border-t flex items-center">
         <Avatar className="h-8 w-8">
           <AvatarImage src="/placeholder.svg" />
-          <AvatarFallback className="bg-blue-600 text-white">TC</AvatarFallback>
+          <AvatarFallback className="bg-blue-600 text-white">
+            {user?.firstName ? user.firstName.substring(0, 2).toUpperCase() : 'U'}
+          </AvatarFallback>
         </Avatar>
         <div className="ml-3">
-          <p className="text-sm font-medium">Tom Cook</p>
+          <p className="text-sm font-medium">{user?.firstName || 'User'}</p>
           <p className="text-xs text-gray-500">View Profile</p>
         </div>
       </div>
