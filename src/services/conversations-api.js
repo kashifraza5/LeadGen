@@ -1,6 +1,6 @@
-import { ApiService } from "./api"
+import api from "./api"
 
-export class ConversationsApiService extends ApiService {
+export class ConversationsApiService {
   // TODO: Replace with actual API call
   async getMessages(leadId: string): Promise<{ messages: Message[]; stats: ConversationStats }> {
     // Simulate API delay

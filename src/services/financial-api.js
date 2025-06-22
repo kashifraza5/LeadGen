@@ -1,27 +1,13 @@
-import { ApiService } from "./api"
-  FinancialProfile,
-  Income,
-  Expense,
-  Asset,
-  Liability,
-  Investment,
-  Insurance,
-  TaxInfo,
-  FinancialGoal,
-  BudgetCategory,
-  CashFlow,
-  NetWorth,
-  FinancialSummary,
-} from "../types/financial"
+// import { ApiService } from "@/services/api-service"
 
-const api = new ApiService()
+// const api = new ApiService()
 
 // Helper function to simulate API delay
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // Financial Profile API with dummy data
 export const financialProfileApi = {
-  getByLeadId: async (leadId: string): Promise<FinancialProfile | null> => {
+  getByLeadId: async (leadId) => {
     await delay(500)
     return {
       id: "fp-1",
@@ -40,10 +26,7 @@ export const financialProfileApi = {
     }
   },
 
-  create: async (
-    leadId: string,
-    data: Omit<FinancialProfile, "id" | "leadId" | "createdAt" | "updatedAt">,
-  ): Promise<FinancialProfile> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: "fp-new",
@@ -54,7 +37,7 @@ export const financialProfileApi = {
     }
   },
 
-  update: async (leadId: string, profileId: string, data: Partial<FinancialProfile>): Promise<FinancialProfile> => {
+  update: async (leadId, profileId, data) => {
     await delay(300)
     return {
       id: profileId,
@@ -74,14 +57,14 @@ export const financialProfileApi = {
     }
   },
 
-  delete: async (leadId: string, profileId: string): Promise<void> => {
+  delete: async (leadId, profileId) => {
     await delay(200)
   },
 }
 
 // Income API with dummy data
 export const incomeApi = {
-  getByLeadId: async (leadId: string): Promise<Income[]> => {
+  getByLeadId: async (leadId) => {
     await delay(400)
     return [
       {
@@ -113,7 +96,7 @@ export const incomeApi = {
     ]
   },
 
-  create: async (leadId: string, data: Omit<Income, "id" | "leadId" | "createdAt" | "updatedAt">): Promise<Income> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: `inc-${Date.now()}`,
@@ -124,7 +107,7 @@ export const incomeApi = {
     }
   },
 
-  update: async (leadId: string, incomeId: string, data: Partial<Income>): Promise<Income> => {
+  update: async (leadId, incomeId, data) => {
     await delay(300)
     return {
       id: incomeId,
@@ -141,14 +124,14 @@ export const incomeApi = {
     }
   },
 
-  delete: async (leadId: string, incomeId: string): Promise<void> => {
+  delete: async (leadId, incomeId) => {
     await delay(200)
   },
 }
 
 // Expenses API with dummy data
 export const expensesApi = {
-  getByLeadId: async (leadId: string): Promise<Expense[]> => {
+  getByLeadId: async (leadId) => {
     await delay(400)
     return [
       {
@@ -189,10 +172,7 @@ export const expensesApi = {
     ]
   },
 
-  create: async (
-    leadId: string,
-    data: Omit<Expense, "id" | "leadId" | "createdAt" | "updatedAt">,
-  ): Promise<Expense> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: `exp-${Date.now()}`,
@@ -203,7 +183,7 @@ export const expensesApi = {
     }
   },
 
-  update: async (leadId: string, expenseId: string, data: Partial<Expense>): Promise<Expense> => {
+  update: async (leadId, expenseId, data) => {
     await delay(300)
     return {
       id: expenseId,
@@ -219,14 +199,14 @@ export const expensesApi = {
     }
   },
 
-  delete: async (leadId: string, expenseId: string): Promise<void> => {
+  delete: async (leadId, expenseId) => {
     await delay(200)
   },
 }
 
 // Assets API with dummy data
 export const assetsApi = {
-  getByLeadId: async (leadId: string): Promise<Asset[]> => {
+  getByLeadId: async (leadId) => {
     await delay(400)
     return [
       {
@@ -264,7 +244,7 @@ export const assetsApi = {
     ]
   },
 
-  create: async (leadId: string, data: Omit<Asset, "id" | "leadId" | "createdAt" | "updatedAt">): Promise<Asset> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: `asset-${Date.now()}`,
@@ -275,7 +255,7 @@ export const assetsApi = {
     }
   },
 
-  update: async (leadId: string, assetId: string, data: Partial<Asset>): Promise<Asset> => {
+  update: async (leadId, assetId, data) => {
     await delay(300)
     return {
       id: assetId,
@@ -289,14 +269,14 @@ export const assetsApi = {
     }
   },
 
-  delete: async (leadId: string, assetId: string): Promise<void> => {
+  delete: async (leadId, assetId) => {
     await delay(200)
   },
 }
 
 // Liabilities API with dummy data
 export const liabilitiesApi = {
-  getByLeadId: async (leadId: string): Promise<Liability[]> => {
+  getByLeadId: async (leadId) => {
     await delay(400)
     return [
       {
@@ -341,10 +321,7 @@ export const liabilitiesApi = {
     ]
   },
 
-  create: async (
-    leadId: string,
-    data: Omit<Liability, "id" | "leadId" | "createdAt" | "updatedAt">,
-  ): Promise<Liability> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: `liab-${Date.now()}`,
@@ -355,7 +332,7 @@ export const liabilitiesApi = {
     }
   },
 
-  update: async (leadId: string, liabilityId: string, data: Partial<Liability>): Promise<Liability> => {
+  update: async (leadId, liabilityId, data) => {
     await delay(300)
     return {
       id: liabilityId,
@@ -371,14 +348,14 @@ export const liabilitiesApi = {
     }
   },
 
-  delete: async (leadId: string, liabilityId: string): Promise<void> => {
+  delete: async (leadId, liabilityId) => {
     await delay(200)
   },
 }
 
 // Investments API with dummy data
 export const investmentsApi = {
-  getByLeadId: async (leadId: string): Promise<Investment[]> => {
+  getByLeadId: async (leadId) => {
     await delay(400)
     return [
       {
@@ -423,10 +400,7 @@ export const investmentsApi = {
     ]
   },
 
-  create: async (
-    leadId: string,
-    data: Omit<Investment, "id" | "leadId" | "createdAt" | "updatedAt">,
-  ): Promise<Investment> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: `inv-${Date.now()}`,
@@ -437,7 +411,7 @@ export const investmentsApi = {
     }
   },
 
-  update: async (leadId: string, investmentId: string, data: Partial<Investment>): Promise<Investment> => {
+  update: async (leadId, investmentId, data) => {
     await delay(300)
     return {
       id: investmentId,
@@ -453,14 +427,14 @@ export const investmentsApi = {
     }
   },
 
-  delete: async (leadId: string, investmentId: string): Promise<void> => {
+  delete: async (leadId, investmentId) => {
     await delay(200)
   },
 }
 
 // Insurance API with dummy data
 export const insuranceApi = {
-  getByLeadId: async (leadId: string): Promise<Insurance[]> => {
+  getByLeadId: async (leadId) => {
     await delay(400)
     return [
       {
@@ -509,10 +483,7 @@ export const insuranceApi = {
     ]
   },
 
-  create: async (
-    leadId: string,
-    data: Omit<Insurance, "id" | "leadId" | "createdAt" | "updatedAt">,
-  ): Promise<Insurance> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: `ins-${Date.now()}`,
@@ -523,7 +494,7 @@ export const insuranceApi = {
     }
   },
 
-  update: async (leadId: string, insuranceId: string, data: Partial<Insurance>): Promise<Insurance> => {
+  update: async (leadId, insuranceId, data) => {
     await delay(300)
     return {
       id: insuranceId,
@@ -541,14 +512,14 @@ export const insuranceApi = {
     }
   },
 
-  delete: async (leadId: string, insuranceId: string): Promise<void> => {
+  delete: async (leadId, insuranceId) => {
     await delay(200)
   },
 }
 
 // Tax Info API with dummy data
 export const taxInfoApi = {
-  getByLeadId: async (leadId: string): Promise<TaxInfo[]> => {
+  getByLeadId: async (leadId) => {
     await delay(400)
     return [
       {
@@ -584,10 +555,7 @@ export const taxInfoApi = {
     ]
   },
 
-  create: async (
-    leadId: string,
-    data: Omit<TaxInfo, "id" | "leadId" | "createdAt" | "updatedAt">,
-  ): Promise<TaxInfo> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: `tax-${Date.now()}`,
@@ -598,7 +566,7 @@ export const taxInfoApi = {
     }
   },
 
-  update: async (leadId: string, taxInfoId: string, data: Partial<TaxInfo>): Promise<TaxInfo> => {
+  update: async (leadId, taxInfoId, data) => {
     await delay(300)
     return {
       id: taxInfoId,
@@ -617,14 +585,14 @@ export const taxInfoApi = {
     }
   },
 
-  delete: async (leadId: string, taxInfoId: string): Promise<void> => {
+  delete: async (leadId, taxInfoId) => {
     await delay(200)
   },
 }
 
 // Financial Goals API with dummy data
 export const financialGoalsApi = {
-  getByLeadId: async (leadId: string): Promise<FinancialGoal[]> => {
+  getByLeadId: async (leadId) => {
     await delay(400)
     return [
       {
@@ -675,10 +643,7 @@ export const financialGoalsApi = {
     ]
   },
 
-  create: async (
-    leadId: string,
-    data: Omit<FinancialGoal, "id" | "leadId" | "createdAt" | "updatedAt">,
-  ): Promise<FinancialGoal> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: `goal-${Date.now()}`,
@@ -689,7 +654,7 @@ export const financialGoalsApi = {
     }
   },
 
-  update: async (leadId: string, goalId: string, data: Partial<FinancialGoal>): Promise<FinancialGoal> => {
+  update: async (leadId, goalId, data) => {
     await delay(300)
     return {
       id: goalId,
@@ -707,14 +672,14 @@ export const financialGoalsApi = {
     }
   },
 
-  delete: async (leadId: string, goalId: string): Promise<void> => {
+  delete: async (leadId, goalId) => {
     await delay(200)
   },
 }
 
 // Budget Categories API with dummy data
 export const budgetCategoriesApi = {
-  getByLeadId: async (leadId: string): Promise<BudgetCategory[]> => {
+  getByLeadId: async (leadId) => {
     await delay(400)
     return [
       {
@@ -775,10 +740,7 @@ export const budgetCategoriesApi = {
     ]
   },
 
-  create: async (
-    leadId: string,
-    data: Omit<BudgetCategory, "id" | "leadId" | "createdAt" | "updatedAt">,
-  ): Promise<BudgetCategory> => {
+  create: async (leadId, data) => {
     await delay(300)
     return {
       id: `budget-${Date.now()}`,
@@ -789,7 +751,7 @@ export const budgetCategoriesApi = {
     }
   },
 
-  update: async (leadId: string, categoryId: string, data: Partial<BudgetCategory>): Promise<BudgetCategory> => {
+  update: async (leadId, categoryId, data) => {
     await delay(300)
     return {
       id: categoryId,
@@ -805,14 +767,14 @@ export const budgetCategoriesApi = {
     }
   },
 
-  delete: async (leadId: string, categoryId: string): Promise<void> => {
+  delete: async (leadId, categoryId) => {
     await delay(200)
   },
 }
 
 // Analytics API with dummy data
 export const financialAnalyticsApi = {
-  getCashFlow: async (leadId: string, startDate?: string, endDate?: string): Promise<CashFlow[]> => {
+  getCashFlow: async (leadId, startDate, endDate) => {
     await delay(500)
     return [
       {
@@ -854,7 +816,7 @@ export const financialAnalyticsApi = {
     ]
   },
 
-  getNetWorth: async (leadId: string): Promise<NetWorth> => {
+  getNetWorth: async (leadId) => {
     await delay(500)
     return {
       totalAssets: 393000,
@@ -877,7 +839,7 @@ export const financialAnalyticsApi = {
     }
   },
 
-  getSummary: async (leadId: string): Promise<FinancialSummary> => {
+  getSummary: async (leadId) => {
     await delay(500)
     return {
       monthlyIncome: 6700,
@@ -893,7 +855,7 @@ export const financialAnalyticsApi = {
     }
   },
 
-  getIncomeVsExpenses: async (leadId: string, period: "monthly" | "quarterly" | "yearly" = "monthly"): Promise<any> => {
+  getIncomeVsExpenses: async (leadId, period = "monthly") => {
     await delay(400)
     return {
       period,
@@ -908,7 +870,7 @@ export const financialAnalyticsApi = {
     }
   },
 
-  getAssetAllocation: async (leadId: string): Promise<any> => {
+  getAssetAllocation: async (leadId) => {
     await delay(400)
     return {
       data: [
@@ -921,7 +883,7 @@ export const financialAnalyticsApi = {
     }
   },
 
-  getDebtToIncomeRatio: async (leadId: string): Promise<any> => {
+  getDebtToIncomeRatio: async (leadId) => {
     await delay(400)
     return {
       ratio: 44.6,

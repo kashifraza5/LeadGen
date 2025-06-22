@@ -1,7 +1,14 @@
-import { useAuth } from '@/components/auth/auth-provider'
+// import { useAuth } from '@/components/auth/auth-provider'
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth()
+  // const { user, logout } = useAuth()
+  const user = {
+    firstName: "John",
+    lastName: "Doe"
+  }
+  const logout = () => {
+    console.log('logout')
+  }
 
   return (
     <div className="p-6">

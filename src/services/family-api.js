@@ -1,46 +1,5 @@
-// Family member types
-export interface FamilyMember {
-  id: string
-  leadId: string
-  name: string
-  relationship: string
-  dateOfBirth?: string
-  age?: number
-  occupation?: string
-  email?: string
-  phone?: string
-  notes?: string
-  isExistingLead: boolean
-  linkedLeadId?: string
-  createdAt: string
-  updatedAt: string
-}
-
-export interface HouseholdInfo {
-  leadId: string
-  householdSize: number
-  householdIncome: number
-  primaryResidence: string
-  yearsAtAddress: number
-  dependents: number
-  maritalStatus: string
-  updatedAt: string
-}
-
-export interface CreateFamilyMemberRequest {
-  name: string
-  relationship: string
-  dateOfBirth?: string
-  occupation?: string
-  email?: string
-  phone?: string
-  notes?: string
-  isExistingLead: boolean
-  linkedLeadId?: string
-}
-
 // Mock family data
-const mockFamilyMembers: Record<string, FamilyMember[]> = {
+const mockFamilyMembers = {
   "LD-10042": [
     {
       id: "FM-001",
@@ -82,7 +41,7 @@ const mockFamilyMembers: Record<string, FamilyMember[]> = {
   ],
 }
 
-const mockHouseholdInfo: Record<string, HouseholdInfo> = {
+const mockHouseholdInfo = {
   "LD-10042": {
     leadId: "LD-10042",
     householdSize: 4,
@@ -105,26 +64,26 @@ const mockExistingLeads = [
 ]
 
 // Simulate API delay
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const familyApi = {
   // Get family members for a lead
-  getFamilyMembers: async (leadId: string): Promise<FamilyMember[]> => {
+  getFamilyMembers: async (leadId) => {
     await delay(400)
     return mockFamilyMembers[leadId] || []
   },
 
   // Get household information
-  getHouseholdInfo: async (leadId: string): Promise<HouseholdInfo | null> => {
+  getHouseholdInfo: async (leadId) => {
     await delay(300)
     return mockHouseholdInfo[leadId] || null
   },
 
   // Create family member
-  createFamilyMember: async (leadId: string, data: CreateFamilyMemberRequest): Promise<FamilyMember> => {
+  createFamilyMember: async (leadId, data) => {
     await delay(500)
 
-    const newFamilyMember: FamilyMember = {
+    const newFamilyMember = {
       id: `FM-${Date.now()}`,
       leadId,
       ...data,
@@ -142,7 +101,7 @@ export const familyApi = {
   },
 
   // Update family member
-  updateFamilyMember: async (id: string, data: Partial<CreateFamilyMemberRequest>): Promise<FamilyMember> => {
+  updateFamilyMember: async (id, data) => {
     await delay(400)
 
     for (const leadId in mockFamilyMembers) {
@@ -166,7 +125,7 @@ export const familyApi = {
   },
 
   // Delete family member
-  deleteFamilyMember: async (id: string): Promise<void> => {
+  deleteFamilyMember: async (id) => {
     await delay(300)
 
     for (const leadId in mockFamilyMembers) {
@@ -181,14 +140,11 @@ export const familyApi = {
   },
 
   // Update household information
-  updateHouseholdInfo: async (
-    leadId: string,
-    data: Partial<Omit<HouseholdInfo, "leadId" | "updatedAt">>,
-  ): Promise<HouseholdInfo> => {
+  updateHouseholdInfo: async (leadId, data) => {
     await delay(400)
 
     const existingInfo = mockHouseholdInfo[leadId]
-    const updatedInfo: HouseholdInfo = {
+    const updatedInfo = {
       leadId,
       ...existingInfo,
       ...data,
@@ -200,24 +156,17 @@ export const familyApi = {
   },
 
   // Get existing leads for linking
-  getExistingLeads: async (): Promise<typeof mockExistingLeads> => {
+  getExistingLeads: async () => {
     await delay(200)
     return mockExistingLeads
   },
 
   // Get family statistics
-  getFamilyStats: async (
-    leadId: string,
-  ): Promise<{
-    totalMembers: number
-    averageAge: number
-    relationships: Record<string, number>
-    linkedLeads: number
-  }> => {
+  getFamilyStats: async (leadId) => {
     await delay(300)
 
     const members = mockFamilyMembers[leadId] || []
-    const relationships: Record<string, number> = {}
+    const relationships = {}
     let totalAge = 0
     let ageCount = 0
     let linkedLeads = 0

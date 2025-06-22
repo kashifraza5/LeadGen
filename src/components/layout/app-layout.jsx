@@ -5,9 +5,17 @@ import { NotificationDropdown } from "@/components/layout/notification-dropdown"
 import { ProfileDropdown } from "@/components/layout/profile-dropdown"
 import { Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useTheme } from "@/components/theme-provider"
+import { useDispatch, useSelector } from "react-redux"
+import { setTheme } from "@/store/theme/themeSlice"
+
 export function AppLayout({ children }) {
-  const { theme, setTheme } = useTheme()
+  const dispatch = useDispatch()
+  const { theme, mode } = useSelector((state) => state.theme)
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark"
+    dispatch(setTheme(newTheme))
+  }
 
   return (
     <div className="flex h-screen">
@@ -22,8 +30,8 @@ export function AppLayout({ children }) {
             <NotificationDropdown />
 
             {/* Theme Toggle */}
-            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {mode === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
 
             {/* Profile Dropdown */}

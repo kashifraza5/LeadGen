@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from "react"
+import React, { createContext, useContext, useEffect } from "react"
+// import { useAuth as useReduxAuth } from "@/store/auth/authHooks"
+import { useDispatch } from "react-redux"
+import { setUser } from "@/store/auth/userSlice"
 import { authUtils } from "@/lib/auth"
-import { authApi } from "@/services/auth-api"
 
 const AuthContext = createContext({
   user: null,
@@ -13,13 +15,40 @@ const AuthContext = createContext({
 })
 
 export function AuthProvider({ children }) {
-  const [state, setState] = useState({
-    user: null,
-    token: null,
-    isLoading: true,
-    isAuthenticated: false,
-  })
+  const dispatch = useDispatch()
+  // const {
+  //   user,
+  //   token,
+  //   signedIn: isAuthenticated,
+  //   isLoading,
+  //   error,
+  //   login: reduxLogin,
+  //   logout: reduxLogout,
+  //   signup: reduxSignup,
+  //   verifyToken,
+  //   fetchProfile,
+  // } = useReduxAuth()
 
+  // Helper function to add authority to user object
+  const addAuthorityToUser = (user) => {
+    if (!user) return null
+    
+    // Add authority based on user role or role_id
+    let authority = ['USER'] // Default authority
+    
+    if (user.role === 'admin' || user.role_id === 1) {
+      authority = ['ADMIN']
+    } else if (user.role === 'user' || user.role_id === 2) {
+      authority = ['USER']
+    }
+    
+    return {
+      ...user,
+      authority
+    }
+  }
+
+  // Initialize auth on mount
   useEffect(() => {
     const initializeAuth = async () => {
       const token = authUtils.getToken()
@@ -28,115 +57,66 @@ export function AuthProvider({ children }) {
       if (token && user) {
         // Verify token with backend
         try {
-          const response = await authApi.verifyToken(token)
-          if (response.success && response.user) {
-            setState({
-              user: response.user,
-              token,
-              isLoading: false,
-              isAuthenticated: true,
-            })
-          } else {
-            // Token invalid, clear auth data
-            authUtils.clearAuth()
-            setState({
-              user: null,
-              token: null,
-              isLoading: false,
-              isAuthenticated: false,
-            })
-          }
-        } catch {
-          // Error verifying token, clear auth data
-          authUtils.clearAuth()
-          setState({
-            user: null,
-            token: null,
-            isLoading: false,
-            isAuthenticated: false,
-          })
+          await verifyToken(token)
+        } catch (error) {
+          console.error('Token verification failed:', error)
         }
-      } else {
-        setState({
-          user: null,
-          token: null,
-          isLoading: false,
-          isAuthenticated: false,
-        })
       }
     }
 
     initializeAuth()
-  }, [])
+  }, ["verifyToken"])
 
+  // Wrapper functions to maintain the same API
   const login = async (email, password, rememberMe = false) => {
-    setState((prev) => ({ ...prev, isLoading: true }))
-
     try {
-      const response = await authApi.login({ email, password, rememberMe })
-
-      if (response.success && response.user && response.token) {
-        authUtils.setToken(response.token)
-        authUtils.setUser(response.user)
-
-        setState({
-          user: response.user,
-          token: response.token,
-          isLoading: false,
-          isAuthenticated: true,
-        })
-
+      const result = await reduxLogin({ email, password, rememberMe })
+      if (result.meta.requestStatus === 'fulfilled') {
+        // Set user data in the user slice
+        const userData = result.payload.user
+        if (userData) {
+          dispatch(setUser(userData))
+        }
         return { success: true }
       } else {
-        setState((prev) => ({ ...prev, isLoading: false }))
-        return { success: false, message: response.message }
+        return { success: false, message: result.payload || 'Login failed' }
       }
-    } catch {
-      setState((prev) => ({ ...prev, isLoading: false }))
-      return { success: false, message: "Login failed. Please try again." }
+    } catch (error) {
+      return { success: false, message: error.message || 'Login failed' }
     }
   }
 
   const logout = () => {
-    authUtils.clearAuth()
-    setState({
-      user: null,
-      token: null,
-      isLoading: false,
-      isAuthenticated: false,
-    })
+    reduxLogout()
   }
 
   const signup = async (data) => {
-    setState((prev) => ({ ...prev, isLoading: true }))
-
     try {
-      const response = await authApi.signup(data)
-
-      if (response.success && response.user && response.token) {
-        authUtils.setToken(response.token)
-        authUtils.setUser(response.user)
-
-        setState({
-          user: response.user,
-          token: response.token,
-          isLoading: false,
-          isAuthenticated: true,
-        })
-
+      const result = await reduxSignup(data)
+      if (result.meta.requestStatus === 'fulfilled') {
+        // Set user data in the user slice
+        const userData = result.payload.user
+        if (userData) {
+          dispatch(setUser(userData))
+        }
         return { success: true }
       } else {
-        setState((prev) => ({ ...prev, isLoading: false }))
-        return { success: false, message: response.message }
+        return { success: false, message: result.payload || 'Signup failed' }
       }
-    } catch {
-      setState((prev) => ({ ...prev, isLoading: false }))
-      return { success: false, message: "Signup failed. Please try again." }
+    } catch (error) {
+      return { success: false, message: error.message || 'Signup failed' }
     }
   }
 
+  // Add authority to user object
+  const userWithAuthority = addAuthorityToUser("user")
+
   const value = {
-    ...state,
+    user: userWithAuthority,
+    token: "1234567890",
+    isLoading: false,
+    isAuthenticated: true,
+    error: null,
     login,
     logout,
     signup,
@@ -145,10 +125,10 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider")
-  }
-  return context
-} 
+// export function useAuth() {
+//   const context = useContext(AuthContext)
+//   if (context === undefined) {
+//     throw new Error("useAuth must be used within an AuthProvider")
+//   }
+//   return context
+// } 

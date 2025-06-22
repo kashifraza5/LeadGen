@@ -41,27 +41,27 @@ const mockResults = [
 ]
 
 const categoryConfig = {
-  leads: { icon: User, label: "Leads", color: "text-blue-600", bgColor: "bg-blue-50", borderColor: "border-blue-200" },
+  leads: { icon: User, label: "Leads", color: "text-blue-600 dark:text-blue-400", bgColor: "bg-blue-50 dark:bg-blue-950", borderColor: "border-blue-200 dark:border-blue-800" },
   activities: {
     icon: Activity,
     label: "Activities",
-    color: "text-green-600",
-    bgColor: "bg-green-50",
-    borderColor: "border-green-200",
+    color: "text-green-600 dark:text-green-400",
+    bgColor: "bg-green-50 dark:bg-green-950",
+    borderColor: "border-green-200 dark:border-green-800",
   },
   emails: {
     icon: Mail,
     label: "Emails",
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
-    borderColor: "border-purple-200",
+    color: "text-purple-600 dark:text-purple-400",
+    bgColor: "bg-purple-50 dark:bg-purple-950",
+    borderColor: "border-purple-200 dark:border-purple-800",
   },
   phones: {
     icon: Phone,
     label: "Phone Numbers",
-    color: "text-orange-600",
-    bgColor: "bg-orange-50",
-    borderColor: "border-orange-200",
+    color: "text-orange-600 dark:text-orange-400",
+    bgColor: "bg-orange-50 dark:bg-orange-950",
+    borderColor: "border-orange-200 dark:border-orange-800",
   },
 }
 
@@ -179,7 +179,7 @@ export function GlobalSearch() {
 
     return parts.map((part, index) =>
       regex.test(part) ? (
-        <span key={index} className="font-semibold text-blue-600 bg-blue-100 px-0.5 rounded">
+        <span key={index} className="font-semibold text-primary bg-primary/10 px-0.5 rounded">
           {part}
         </span>
       ) : (
@@ -214,10 +214,10 @@ export function GlobalSearch() {
       </Button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
-          <div className="p-3 border-b">
+        <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-card border border-border rounded-lg shadow-lg">
+          <div className="p-3 border-b border-border">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 ref={inputRef}
                 placeholder="Search leads, activities, emails..."
@@ -238,7 +238,7 @@ export function GlobalSearch() {
                     const Icon = config.icon
 
                     return (
-                      <div key={category} className="p-3 border-b last:border-b-0">
+                      <div key={category} className="p-3 border-b border-border last:border-b-0">
                         <div className="flex items-center mb-2">
                           <Icon className={`h-4 w-4 mr-2 ${config.color}`} />
                           <span className={`text-sm font-medium ${config.color}`}>{config.label}</span>
@@ -251,13 +251,13 @@ export function GlobalSearch() {
                             <Link
                               key={result.id}
                               to={result.url}
-                              className={`block p-2 rounded-md hover:bg-gray-50 ${
-                                selectedIndex === results.findIndex((r) => r.id === result.id) ? "bg-gray-50" : ""
+                              className={`block p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
+                                selectedIndex === results.findIndex((r) => r.id === result.id) ? "bg-accent text-accent-foreground" : ""
                               }`}
                               onClick={() => handleResultClick(result)}
                             >
                               <div className="font-medium">{highlightMatch(result.title, query)}</div>
-                              <div className="text-sm text-gray-500">{result.subtitle}</div>
+                              <div className="text-sm text-muted-foreground">{result.subtitle}</div>
                             </Link>
                           ))}
                         </div>
@@ -265,8 +265,8 @@ export function GlobalSearch() {
                     )
                   })
                 ) : (
-                  <div className="p-6 text-center text-gray-500">
-                    <Search className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                  <div className="p-6 text-center text-muted-foreground">
+                    <Search className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
                     <p>No results found for "{query}"</p>
                   </div>
                 )}
@@ -274,18 +274,18 @@ export function GlobalSearch() {
             ) : (
               <div className="p-3">
                 <div className="mb-3">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">Recent Searches</h3>
+                  <h3 className="text-sm font-medium text-foreground mb-2">Recent Searches</h3>
                   <div className="space-y-1">
                     {recentSearches.map((search) => (
                       <button
                         key={search.id}
-                        className="w-full text-left p-2 rounded-md hover:bg-gray-50 text-sm"
+                        className="w-full text-left p-2 rounded-md hover:bg-accent hover:text-accent-foreground text-sm transition-colors"
                         onClick={() => handleRecentSearchClick(search.query)}
                       >
                         <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-2 text-gray-400" />
+                          <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
                           <span className="flex-1">{search.query}</span>
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-muted-foreground">
                             {search.timestamp.toLocaleTimeString()}
                           </span>
                         </div>
@@ -297,7 +297,7 @@ export function GlobalSearch() {
             )}
 
             {results.length > 0 && (
-              <div className="p-3 border-t bg-muted/20 text-xs text-muted-foreground text-center">
+              <div className="p-3 border-t border-border bg-muted/20 text-xs text-muted-foreground text-center">
                 Use ↑↓ to navigate, Enter to select, Esc to close
               </div>
             )}

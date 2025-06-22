@@ -1,72 +1,10 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
-  FinancialOverview,
-  IncomeExpense,
-  AssetLiability,
-  Goal,
-  RetirementPlan,
-  InvestmentAccount,
-} from "@/types/financial"
 import { financialApi } from "@/services/financial-api"
 
-interface FinancialState {
-  // Data
-  overview: FinancialOverview | null
-  incomeExpenses: IncomeExpense[]
-  assetsLiabilities: AssetLiability[]
-  goals: Goal[]
-  retirementPlan: RetirementPlan | null
-  investmentAccounts: InvestmentAccount[]
-
-  // Loading states
-  isLoading: boolean
-  isLoadingOverview: boolean
-  isLoadingIncomeExpenses: boolean
-  isLoadingAssetsLiabilities: boolean
-  isLoadingGoals: boolean
-  isLoadingRetirement: boolean
-  isLoadingInvestments: boolean
-
-  // Error states
-  error: string | null
-
-  // Actions
-  fetchOverview: (leadId: string) => Promise<void>
-  fetchIncomeExpenses: (leadId: string) => Promise<void>
-  fetchAssetsLiabilities: (leadId: string) => Promise<void>
-  fetchGoals: (leadId: string) => Promise<void>
-  fetchRetirementPlan: (leadId: string) => Promise<void>
-  fetchInvestmentAccounts: (leadId: string) => Promise<void>
-  fetchAllFinancialData: (leadId: string) => Promise<void>
-
-  // CRUD operations
-  createIncomeExpense: (leadId: string, data: Partial<IncomeExpense>) => Promise<void>
-  updateIncomeExpense: (id: string, data: Partial<IncomeExpense>) => Promise<void>
-  deleteIncomeExpense: (id: string) => Promise<void>
-
-  createAssetLiability: (leadId: string, data: Partial<AssetLiability>) => Promise<void>
-  updateAssetLiability: (id: string, data: Partial<AssetLiability>) => Promise<void>
-  deleteAssetLiability: (id: string) => Promise<void>
-
-  createGoal: (leadId: string, data: Partial<Goal>) => Promise<void>
-  updateGoal: (id: string, data: Partial<Goal>) => Promise<void>
-  deleteGoal: (id: string) => Promise<void>
-
-  updateRetirementPlan: (leadId: string, data: Partial<RetirementPlan>) => Promise<void>
-
-  createInvestmentAccount: (leadId: string, data: Partial<InvestmentAccount>) => Promise<void>
-  updateInvestmentAccount: (id: string, data: Partial<InvestmentAccount>) => Promise<void>
-  deleteInvestmentAccount: (id: string) => Promise<void>
-
-  // Utility actions
-  clearError: () => void
-  reset: () => void
-}
-
-export const useFinancialStore = create<FinancialState>()(
+export const useFinancialStore = create(
   devtools(
     (set, get) => ({
-      // Initial state
       overview: null,
       incomeExpenses: [],
       assetsLiabilities: [],
@@ -84,21 +22,20 @@ export const useFinancialStore = create<FinancialState>()(
 
       error: null,
 
-      // Fetch actions
-      fetchOverview: async (leadId: string) => {
+      fetchOverview: async (leadId) => {
         set({ isLoadingOverview: true, error: null })
         try {
           const overview = await financialApi.analytics.getSummary(leadId)
           set({ overview, isLoadingOverview: false })
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : "Failed to fetch overview",
+            error: error?.message || "Failed to fetch overview",
             isLoadingOverview: false,
           })
         }
       },
 
-      fetchIncomeExpenses: async (leadId: string) => {
+      fetchIncomeExpenses: async (leadId) => {
         set({ isLoadingIncomeExpenses: true, error: null })
         try {
           const income = await financialApi.income.getByLeadId(leadId)
@@ -110,13 +47,13 @@ export const useFinancialStore = create<FinancialState>()(
           set({ incomeExpenses, isLoadingIncomeExpenses: false })
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : "Failed to fetch income/expenses",
+            error: error?.message || "Failed to fetch income/expenses",
             isLoadingIncomeExpenses: false,
           })
         }
       },
 
-      fetchAssetsLiabilities: async (leadId: string) => {
+      fetchAssetsLiabilities: async (leadId) => {
         set({ isLoadingAssetsLiabilities: true, error: null })
         try {
           const assets = await financialApi.assets.getByLeadId(leadId)
@@ -128,52 +65,52 @@ export const useFinancialStore = create<FinancialState>()(
           set({ assetsLiabilities, isLoadingAssetsLiabilities: false })
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : "Failed to fetch assets/liabilities",
+            error: error?.message || "Failed to fetch assets/liabilities",
             isLoadingAssetsLiabilities: false,
           })
         }
       },
 
-      fetchGoals: async (leadId: string) => {
+      fetchGoals: async (leadId) => {
         set({ isLoadingGoals: true, error: null })
         try {
           const goals = await financialApi.goals.getByLeadId(leadId)
           set({ goals, isLoadingGoals: false })
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : "Failed to fetch goals",
+            error: error?.message || "Failed to fetch goals",
             isLoadingGoals: false,
           })
         }
       },
 
-      fetchRetirementPlan: async (leadId: string) => {
+      fetchRetirementPlan: async (leadId) => {
         set({ isLoadingRetirement: true, error: null })
         try {
           const retirementPlan = await financialApi.profile.getByLeadId(leadId)
           set({ retirementPlan, isLoadingRetirement: false })
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : "Failed to fetch retirement plan",
+            error: error?.message || "Failed to fetch retirement plan",
             isLoadingRetirement: false,
           })
         }
       },
 
-      fetchInvestmentAccounts: async (leadId: string) => {
+      fetchInvestmentAccounts: async (leadId) => {
         set({ isLoadingInvestments: true, error: null })
         try {
           const investmentAccounts = await financialApi.investments.getByLeadId(leadId)
           set({ investmentAccounts, isLoadingInvestments: false })
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : "Failed to fetch investment accounts",
+            error: error?.message || "Failed to fetch investment accounts",
             isLoadingInvestments: false,
           })
         }
       },
 
-      fetchAllFinancialData: async (leadId: string) => {
+      fetchAllFinancialData: async (leadId) => {
         set({ isLoading: true, error: null })
         try {
           await Promise.all([
@@ -187,161 +124,161 @@ export const useFinancialStore = create<FinancialState>()(
           set({ isLoading: false })
         } catch (error) {
           set({
-            error: error instanceof Error ? error.message : "Failed to fetch financial data",
+            error: error?.message || "Failed to fetch financial data",
             isLoading: false,
           })
         }
       },
 
-      // CRUD operations for Income/Expenses
-      createIncomeExpense: async (leadId: string, data: Partial<IncomeExpense>) => {
+      createIncomeExpense: async (leadId, data) => {
         try {
           const newItem = await financialApi.income.create(leadId, data)
           set((state) => ({
             incomeExpenses: [...state.incomeExpenses, newItem],
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to create income/expense" })
+          set({ error: error?.message || "Failed to create income/expense" })
         }
       },
 
-      updateIncomeExpense: async (id: string, data: Partial<IncomeExpense>) => {
+      updateIncomeExpense: async (id, data) => {
         try {
-          const updatedItem = await financialApi.income.update(data.leadId!, id, data)
+          const updatedItem = await financialApi.income.update(data.leadId, id, data)
           set((state) => ({
-            incomeExpenses: state.incomeExpenses.map((item) => (item.id === id ? updatedItem : item)),
+            incomeExpenses: state.incomeExpenses.map((item) =>
+              item.id === id ? updatedItem : item,
+            ),
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to update income/expense" })
+          set({ error: error?.message || "Failed to update income/expense" })
         }
       },
 
-      deleteIncomeExpense: async (id: string) => {
+      deleteIncomeExpense: async (id) => {
         try {
           await financialApi.income.delete("", id)
           set((state) => ({
             incomeExpenses: state.incomeExpenses.filter((item) => item.id !== id),
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to delete income/expense" })
+          set({ error: error?.message || "Failed to delete income/expense" })
         }
       },
 
-      // CRUD operations for Assets/Liabilities
-      createAssetLiability: async (leadId: string, data: Partial<AssetLiability>) => {
+      createAssetLiability: async (leadId, data) => {
         try {
           const newItem = await financialApi.assets.create(leadId, data)
           set((state) => ({
             assetsLiabilities: [...state.assetsLiabilities, newItem],
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to create asset/liability" })
+          set({ error: error?.message || "Failed to create asset/liability" })
         }
       },
 
-      updateAssetLiability: async (id: string, data: Partial<AssetLiability>) => {
+      updateAssetLiability: async (id, data) => {
         try {
-          const updatedItem = await financialApi.assets.update(data.leadId!, id, data)
+          const updatedItem = await financialApi.assets.update(data.leadId, id, data)
           set((state) => ({
-            assetsLiabilities: state.assetsLiabilities.map((item) => (item.id === id ? updatedItem : item)),
+            assetsLiabilities: state.assetsLiabilities.map((item) =>
+              item.id === id ? updatedItem : item,
+            ),
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to update asset/liability" })
+          set({ error: error?.message || "Failed to update asset/liability" })
         }
       },
 
-      deleteAssetLiability: async (id: string) => {
+      deleteAssetLiability: async (id) => {
         try {
           await financialApi.assets.delete("", id)
           set((state) => ({
             assetsLiabilities: state.assetsLiabilities.filter((item) => item.id !== id),
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to delete asset/liability" })
+          set({ error: error?.message || "Failed to delete asset/liability" })
         }
       },
 
-      // CRUD operations for Goals
-      createGoal: async (leadId: string, data: Partial<Goal>) => {
+      createGoal: async (leadId, data) => {
         try {
           const newGoal = await financialApi.goals.create(leadId, data)
           set((state) => ({
             goals: [...state.goals, newGoal],
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to create goal" })
+          set({ error: error?.message || "Failed to create goal" })
         }
       },
 
-      updateGoal: async (id: string, data: Partial<Goal>) => {
+      updateGoal: async (id, data) => {
         try {
-          const updatedGoal = await financialApi.goals.update(data.leadId!, id, data)
+          const updatedGoal = await financialApi.goals.update(data.leadId, id, data)
           set((state) => ({
-            goals: state.goals.map((goal) => (goal.id === id ? updatedGoal : goal)),
+            goals: state.goals.map((goal) =>
+              goal.id === id ? updatedGoal : goal,
+            ),
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to update goal" })
+          set({ error: error?.message || "Failed to update goal" })
         }
       },
 
-      deleteGoal: async (id: string) => {
+      deleteGoal: async (id) => {
         try {
           await financialApi.goals.delete("", id)
           set((state) => ({
             goals: state.goals.filter((goal) => goal.id !== id),
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to delete goal" })
+          set({ error: error?.message || "Failed to delete goal" })
         }
       },
 
-      // Retirement plan operations
-      updateRetirementPlan: async (leadId: string, data: Partial<RetirementPlan>) => {
+      updateRetirementPlan: async (leadId, data) => {
         try {
           const updatedPlan = await financialApi.profile.update(leadId, data)
           set({ retirementPlan: updatedPlan })
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to update retirement plan" })
+          set({ error: error?.message || "Failed to update retirement plan" })
         }
       },
 
-      // CRUD operations for Investment Accounts
-      createInvestmentAccount: async (leadId: string, data: Partial<InvestmentAccount>) => {
+      createInvestmentAccount: async (leadId, data) => {
         try {
           const newAccount = await financialApi.investments.create(leadId, data)
           set((state) => ({
             investmentAccounts: [...state.investmentAccounts, newAccount],
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to create investment account" })
+          set({ error: error?.message || "Failed to create investment account" })
         }
       },
 
-      updateInvestmentAccount: async (id: string, data: Partial<InvestmentAccount>) => {
+      updateInvestmentAccount: async (id, data) => {
         try {
-          const updatedAccount = await financialApi.investments.update(data.leadId!, id, data)
+          const updatedAccount = await financialApi.investments.update(data.leadId, id, data)
           set((state) => ({
             investmentAccounts: state.investmentAccounts.map((account) =>
               account.id === id ? updatedAccount : account,
             ),
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to update investment account" })
+          set({ error: error?.message || "Failed to update investment account" })
         }
       },
 
-      deleteInvestmentAccount: async (id: string) => {
+      deleteInvestmentAccount: async (id) => {
         try {
           await financialApi.investments.delete("", id)
           set((state) => ({
             investmentAccounts: state.investmentAccounts.filter((account) => account.id !== id),
           }))
         } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Failed to delete investment account" })
+          set({ error: error?.message || "Failed to delete investment account" })
         }
       },
 
-      // Utility actions
       clearError: () => set({ error: null }),
 
       reset: () =>
@@ -362,8 +299,6 @@ export const useFinancialStore = create<FinancialState>()(
           error: null,
         }),
     }),
-    {
-      name: "financial-store",
-    },
-  ),
+    { name: "financial-store" }
+  )
 )
