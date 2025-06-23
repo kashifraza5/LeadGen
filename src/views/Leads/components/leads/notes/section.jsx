@@ -7,51 +7,43 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Plus, MoreHorizontal, Clock, Tag, MessageSquare, Loader2, X } from "lucide-react"
 import { AddNoteModal } from "./add-note-modal"
 import { Comments } from "./comments"
-import { useDispatch, useSelector } from "react-redux"
-import { fetchNotes, clearError } from "@/views/Leads/store/dataSlice"
-// import { useNotesStore } from "@/store/notes-store"
+import { getNotes } from "@/services/LeadService"
 import { useParams } from "react-router-dom"
+
 export function NotesTab() {
   const [isAddNoteModalOpen, setIsAddNoteModalOpen] = useState(false)
-  const dispatch = useDispatch()
-  const leadsState = useSelector((state) => state.leads) || {};
-  const notes = leadsState?.data?.notes?.results || [];
-  console.log("🚀 ~ notes:", notes)
-  const isLoading = leadsState?.data?.isLoading || false;
-  const error = leadsState?.data?.error || null;
+  const [notes, setNotes] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
   
   const params = useParams()
   const leadId = params?.id || 2
 
-  useEffect(() => {
-    dispatch(fetchNotes(leadId))
-  }, [leadId, dispatch])
+  const fetchNotes = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await getNotes(leadId);
+      console.log("🚀 ~ fetchNotes ~ response:", response);
+      setNotes(response?.results || response || []);
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+      setError("Failed to fetch notes");
+      setNotes([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
-  // const {
-  //   notes,
-  //   stats,
-  //   isLoading,
-  //   error,
-  //   fetchNotes,
-  //   createNote,
-  //   updateNote,
-  //   deleteNote,
-  //   addComment,
-  //   deleteComment,
-  //   clearError,
-  // } = useNotesStore()
+  useEffect(() => {
+    fetchNotes();
+  }, [leadId]);
 
   const currentUser = {
     id: "user1",
     name: "Jennifer Wilson",
     initials: "JW",
   }
-
-  // useEffect(() => {
-  //   if (leadId) {
-  //     fetchNotes(leadId)
-  //   }
-  // }, [leadId, fetchNotes])
 
   const handleAddNote = async (noteData) => {
     try {
@@ -145,7 +137,7 @@ export function NotesTab() {
         <Alert variant="destructive">
           <AlertDescription className="flex items-center justify-between">
             {error}
-            <Button variant="ghost" size="sm" onClick={() => dispatch(clearError())} className="h-auto p-1">
+            <Button variant="ghost" size="sm" onClick={() => setError(null)} className="h-auto p-1">
               <X className="h-4 w-4" />
             </Button>
           </AlertDescription>

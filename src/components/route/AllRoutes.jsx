@@ -14,7 +14,7 @@ const AllRoutes = () => {
         <Routes>
             <Route
                 path="/"
-                element={<Navigate replace to={authenticatedEntryPath} />}
+                element={<Navigate replace to="/auth/login" />}
             />
             {protectedRoutes.map((route, index) => (
                 <Route

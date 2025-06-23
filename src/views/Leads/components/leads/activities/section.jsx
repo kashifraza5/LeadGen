@@ -15,12 +15,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Alert, AlertDescription } from "@/components/ui/alert" 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Calendar, Clock, MoreVertical, Plus, Search, Phone, Video, CheckSquare, AlertCircle, X, User } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useParams } from "react-router-dom"
 import api from "../../../../../services/api"
+import { getLeadActivities } from "@/services/LeadService"
 import {
   Tooltip,
   TooltipContent,
@@ -494,11 +495,13 @@ export function Section() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedActivity, setSelectedActivity] = useState(null)
 
+
+
   const fetchActivities = async () => {
     try {
       setIsLoading(true)
       setError(null)
-      const response = await api.get(`/lead/${leadId}/activities/`)
+      const response = await getLeadActivities(leadId)
       
       // Handle the API response array
       const activitiesData = response.data
@@ -565,6 +568,7 @@ export function Section() {
     if (leadId) {
       fetchActivities()
     }
+
   }, [leadId])
 
   const handleAddActivity = (status) => {
