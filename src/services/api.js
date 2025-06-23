@@ -38,7 +38,8 @@ function deepParseJson(jsonString) {
 console.log("🚀 ~ import.meta.env.VITE_API_URL:", import.meta.env.VITE_API_URL)
 
 const api = axios.create({
-  baseURL: "https://b4a2-103-184-0-162.ngrok-free.app/api/v1/", 
+  // baseURL: "https://b4a2-103-184-0-162.ngrok-free.app/api/v1/", 
+  baseURL: "https://demo.iclosefaster.com/api/v1/", 
   timeout: Number(import.meta.env.VITE_API_TIMEOUT || 10000000000),
   headers: {
     'Content-Type': 'application/json',

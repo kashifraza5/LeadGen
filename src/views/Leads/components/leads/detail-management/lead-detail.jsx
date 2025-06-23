@@ -16,13 +16,23 @@ import { ActivitiesTab } from "../tab-components/activities-tab"
 import { ConversationsTab } from "../tab-components/conversations-tab"
 import { CampaignsTab } from "../tab-components/campaigns-tab"
 import { NotesTab } from "../tab-components/notes-tab"
+import { injectReducer } from "@/store"
 // import { FinancialTab } from "../tab-components/financials-tab"
+
+import {getLeads} from "@/services/LeadService"
 import { useSelector } from "react-redux"
+import reducer from "@/views/Leads/store"
+injectReducer('leads', reducer)
 
 const LeadDetail = () => {
   const dispatch = useDispatch()
   const params = useParams()
   const leadId = params?.id
+
+  const getLeadsData = async () => {
+    const response = await getLeads(leadId)
+    console.log("🚀 ~ getLeadsData ~ response:", response)
+  }
   
   const { leads } = useSelector((state) => state.leads?.data || {
     leads: [],

@@ -28,21 +28,29 @@ import {
   Archive,
   Loader2,
 } from "lucide-react"
-import { useDispatch, useSelector } from "react-redux"
-import { fetchMessages } from "@/views/Leads/store/dataSlice"
+// import { useDispatch, useSelector } from "react-redux"
+// import { fetchMessages } from "@/views/Leads/store/dataSlice"
 // import { useConversationsStore } from "@/store/conversations-store"
 import { useParams } from "react-router-dom"
-import reducer from "@/store/index"
+// import reducer from "@/store/index"
+import { getMessages } from "@/services/LeadService"
+
 export function ConversationsTab() {
   // const { messages, selectedMessage, isLoading, error, fetchMessages, selectMessage, sendMessage, clearError } =
   //   useConversationsStore()
   const params = useParams()
   const leadId = params?.id || 2
   console.log("🚀 ~ leadId:", leadId)
-  const dispatch = useDispatch()
-  const leadsState = useSelector((state) => state.leads) || {};
-  const messages = leadsState?.data?.messages?.results || leadsState?.data?.messages || [];
-  const isLoading = leadsState?.data?.isLoading || false;
+  // const dispatch = useDispatch()
+  // const leadsState = useSelector((state) => state.leads) || {};
+  // const messages = leadsState?.data?.messages?.results || leadsState?.data?.messages || [];
+  // const isLoading = leadsState?.data?.isLoading || false;
+  
+  // Local state for messages and loading
+  const [messages, setMessages] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  
   const [searchTerm, setSearchTerm] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [filterAdvisor, setFilterAdvisor] = useState("all")
@@ -55,10 +63,28 @@ export function ConversationsTab() {
   const [selectedCampaign, setSelectedCampaign] = useState("")
   const [showCompose, setShowCompose] = useState(false)
   const [selectedMessage, setSelectedMessage] = useState(null)
+  
+  const getMessagesData = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      const response = await getMessages(leadId);
+      console.log("🚀 ~ getMessagesData ~ response:", response);
+      
+      // Set messages from response
+      const messagesData = response?.results || response || [];
+      setMessages(messagesData)
+    } catch (error) {
+      console.log("🚀 ~ getMessagesData ~ error:", error);
+      setError(error.message || "Failed to fetch messages")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
-    dispatch(fetchMessages(leadId))
-  }, [leadId, dispatch])
+    getMessagesData()
+  }, [leadId])
 
   // Map API response to expected format
   const mappedMessages = messages.map((message) => ({
@@ -162,8 +188,7 @@ export function ConversationsTab() {
   }
 
   const clearError = () => {
-    // TODO: Implement clear error function
-    console.log("Clearing error")
+    setError(null)
   }
 if (isLoading) {
   return (
@@ -177,17 +202,17 @@ if (isLoading) {
 }
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)]">
-      {/* {error && ( */}
+      {error && (
         <Alert className="mb-4">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="flex justify-between items-center">
-            {/* {error} */}
+            {error}
             <Button variant="ghost" size="sm" onClick={clearError}>
               Dismiss
             </Button>
           </AlertDescription>
         </Alert>
-      {/* )} */}
+      )}
 
       <div className="flex border rounded-lg overflow-hidden flex-1">
         {/* Left Panel - Messages List */}

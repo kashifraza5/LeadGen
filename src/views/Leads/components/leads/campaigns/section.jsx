@@ -6,25 +6,33 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "lucide-react";
 import { CampaignHistory } from "./CampaignHistory";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchLeadCampaigns } from "@/views/Leads/store/dataSlice";
 import { useParams } from "react-router-dom";
+import { getLeadCampaigns } from "@/services/LeadService";
 
 export function CampaignsTab() {
   const [openCampaignId, setOpenCampaignId] = useState(null);
-  const dispatch = useDispatch();
+  const [campaigns, setCampaigns] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
   const leadId = params?.id || "LD-10042"; // Fallback for demo
-  const campaignss = useSelector((state) => state.leads.data.campaigns);
-  const isLoading = useSelector((state) => state.leads.data.isLoading);
-  console.log("🚀 ~ campaigns:", campaignss);
+
+  const getLeadCampaignsData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getLeadCampaigns(leadId);
+      console.log("🚀 ~ getLeadCampaignsData ~ response:", response);
+      setCampaigns(response || []);
+    } catch (error) {
+      console.error("Error fetching campaigns:", error);
+      setCampaigns([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
-    dispatch(fetchLeadCampaigns(leadId));
-  }, [dispatch, leadId]);
-
-  // Use campaignss from state instead of hardcoded campaigns
-  const campaigns = campaignss || [];
+    getLeadCampaignsData();
+  }, [leadId]);
 
   const statusStyles = {
     active: "!bg-green-50 !text-green-700 !border-green-200",
@@ -45,7 +53,6 @@ export function CampaignsTab() {
     completed: "text-gray-500",
     scheduled: "text-orange-500",
   };
-
 
   // Show loading state
   if (isLoading) {
