@@ -55,6 +55,7 @@
     "react-day-picker": "latest",
     "react-dom": "^18.2.0",
     "react-hook-form": "latest",
+    "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-resizable-panels": "latest",
     "react-router-dom": "^6.8.0",

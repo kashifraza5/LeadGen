@@ -299,7 +299,7 @@ export function CampaignHistory({ campaigns }) {
                         </div>
                         <div className="mt-2 text-sm text-gray-500">
                           {new Date(
-                            step.matrix.message.updated_at
+                            step.matrix?.message?.updated_at
                           ).toLocaleDateString()}
                         </div>
 

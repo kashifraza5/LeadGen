@@ -7,7 +7,7 @@ export const protectedRoutes = [
     {
         key: 'dashboard',
         path: '/dashboard',
-        component: React.lazy(() => import('@/views/Dashboard')),
+        component: React.lazy(() => import('@/views/Dashboard/index.jsx')),
     },
     {
         key: 'leads',
@@ -22,7 +22,7 @@ export const protectedRoutes = [
     {
         key: 'campaigns',
         path: '/campaigns',
-        component: React.lazy(() => import('@/pages/CampaignsPage')),
+        component: React.lazy(() => import('@/views/Campaign/index.jsx')),
     },
     {
         key: 'analytics',
@@ -32,7 +32,7 @@ export const protectedRoutes = [
     {
         key: 'company.overview',
         path: '/company/overview',
-        component: React.lazy(() => import('@/pages/CompanyOverviewPage')),
+        component: React.lazy(() => import('@/views/Company/Overview/index.jsx')),
         meta: {
             header: 'Company Overview',
         },
@@ -40,7 +40,7 @@ export const protectedRoutes = [
     {
         key: 'company.employees',
         path: '/company/employees',
-        component: React.lazy(() => import('@/pages/CompanyEmployeesPage')),
+        component: React.lazy(() => import('@/views/Company/Employees/index.jsx')),
         meta: {
             header: 'Company Employees',
         },
@@ -48,7 +48,7 @@ export const protectedRoutes = [
     {
         key: 'company.territories',
         path: '/company/territories',
-        component: React.lazy(() => import('@/pages/CompanyTerritoriesPage')),
+        component: React.lazy(() => import('@/views/Company/Territories/index.jsx')),
         meta: {
             header: 'Company Territories',
         },
@@ -56,7 +56,7 @@ export const protectedRoutes = [
     {
         key: 'company.permissions',
         path: '/company/permissions',
-        component: React.lazy(() => import('@/pages/CompanyPermissionsPage')),
+        component: React.lazy(() => import('@/views/Company/Permissions/index.jsx')),
         meta: {
             header: 'Company Permissions',
         },
@@ -64,7 +64,7 @@ export const protectedRoutes = [
     {
         key: 'company.billing',
         path: '/company/billing',
-        component: React.lazy(() => import('@/pages/CompanyBillingPage')),
+        component: React.lazy(() => import('@/views/Company/Billings/index.jsx')),
         meta: {
             header: 'Company Billing',
         },
@@ -72,7 +72,7 @@ export const protectedRoutes = [
     {
         key: 'company.branding',
         path: '/company/branding',
-        component: React.lazy(() => import('@/pages/CompanyBrandingPage')),
+        component: React.lazy(() => import('@/views/Company/Branding/index.jsx')),
         meta: {
             header: 'Company Branding',
         },
@@ -88,17 +88,18 @@ export const protectedRoutes = [
     {
         key: 'company.notifications',
         path: '/company/notifications',
-        component: React.lazy(() => import('@/pages/CompanyNotificationsPage')),
+        component: React.lazy(() => import('@/views/Company/Notification/index.jsx')),
         meta: {
             header: 'Company Notifications',
         },
     },
-    {
-        key: 'profile',
-        path: '/profile',
-        component: React.lazy(() => import('@/pages/ProfilePage')),
-        meta: {
-            header: 'Profile',
-        },
-    },
+    // {
+    //     key: 'profile',
+    //     path: '/profile',
+    //     component: React.lazy(() => import('@/views/Profile/index.js')),
+    //     meta: {
+    //         header: 'Profile',
+    //     },
+    // },
+ 
 ] 

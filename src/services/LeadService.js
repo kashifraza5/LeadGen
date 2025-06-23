@@ -22,6 +22,10 @@ export const getLeadDocuments = async (leadId) => {
     const response = await api.get(`/lead/${leadId}/documents/`)
     return response.data
 }
+export const getLeadActivities = async (leadId) => {
+    const response = await api.get(`/lead/${leadId}/activities/`)
+    return response.data
+}
 export const getMessages = async (leadId) => {      
     console.log("🚀 ~ leadId:", leadId)
     const response = await api.get(`/lead/${leadId}/messages/`)
