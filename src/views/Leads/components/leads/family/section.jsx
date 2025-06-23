@@ -20,32 +20,38 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PlusCircle, Loader2, X } from "lucide-react";
 import { AddFamilyMemberModal } from "./add-family-member-modal";
 import { familyApi } from "@/services/family-api";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchFamilyMembers } from "@/views/Leads/store/dataSlice";
-import { injectReducer } from "@/store";
-import reducer from "@/store/index";
+import { getFamilyMembers } from "@/services/LeadService";
+
 export function FamilySection() {
-  const dispatch = useDispatch();
   const params = useParams();
   const leadId = params?.id || "LD-10042"; // Fallback for demo
-  const leadsState = useSelector((state) => state.leads) || {};
-  console.log("🚀 ~ leadsState:", leadsState);
-  const familyMembers = leadsState?.data?.familyMembers || [];
-  const isLoading = leadsState?.isLoading || false;
-  console.log("🚀 ~ familyMembers:", familyMembers);
-
-  const [familyMemberss, setFamilyMembers] = useState([]);
-  const [householdInfo, setHouseholdInfo] = useState(null);
-  const [isAddFamilyMemberModalOpen, setIsAddFamilyMemberModalOpen] =
-    useState(false);
+  
+  // Local state management
+  const [familyMembers, setFamilyMembers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [householdInfo, setHouseholdInfo] = useState(null);
+  const [isAddFamilyMemberModalOpen, setIsAddFamilyMemberModalOpen] = useState(false);
+
+  const getFamilyMembersData = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await getFamilyMembers(leadId);
+      setFamilyMembers(response.results || []);
+      console.log("🚀 ~ getFamilyMembersData ~ response:", response);
+    } catch (error) {
+      console.log("🚀 ~ getFamilyMembersData ~ error:", error);
+      setError(error?.detail || error?.message || 'Failed to fetch family members');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    injectReducer("leads", reducer);
-    dispatch(fetchFamilyMembers(leadId));
-  }, [leadId, dispatch]);
-
-
+    getFamilyMembersData();
+  }, [leadId]);
 
   const handleAddFamilyMember = async (familyMemberData) => {
     try {
@@ -87,6 +93,10 @@ export function FamilySection() {
     }
   };
 
+  const handleRetry = () => {
+    getFamilyMembersData();
+  };
+
   if (error) {
     return (
       <div className="space-y-6">
@@ -98,7 +108,7 @@ export function FamilySection() {
             </Button>
           </AlertDescription>
         </Alert>
-        <Button onClick={fetchFamilyData}>Retry</Button>
+        <Button onClick={handleRetry}>Retry</Button>
       </div>
     );
   }
@@ -131,7 +141,7 @@ export function FamilySection() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {familyMembers?.family_members?.length === 0 ? (
+              {familyMembers?.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <p>No family members added yet.</p>
                   <Button
@@ -156,7 +166,7 @@ export function FamilySection() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {familyMembers?.family_members?.map((member) => (
+                    {familyMembers?.map((member) => (
                       <TableRow key={member.id}>
                         <TableCell className="font-medium">
                           {member.name}
@@ -186,7 +196,6 @@ export function FamilySection() {
             </CardContent>
           </Card>
 
-          {/* {householdInfo && ( */}
           <Card>
             <CardHeader>
               <CardTitle>Household Information</CardTitle>
@@ -225,7 +234,6 @@ export function FamilySection() {
               </div>
             </CardContent>
           </Card>
-          {/* )} */}
         </>
       )}
 

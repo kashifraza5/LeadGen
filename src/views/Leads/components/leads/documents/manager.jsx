@@ -27,9 +27,8 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchLeadDocuments } from "@/views/Leads/store/dataSlice";
 import { useParams } from "react-router-dom";
+import { getLeadDocuments } from "@/services/LeadService";
 
 // Type definitions
 const FileItem = {
@@ -50,15 +49,34 @@ const FolderItem = {
 };
 
 const Manager = () => {
-  const dispatch = useDispatch();
   const params = useParams();
   const leadId = params?.id || "LD-10042"; // Fallback for demo
+  
+  // Local state management
+  const [leadDocuments, setLeadDocuments] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const getLeadDocumentsData = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await getLeadDocuments(leadId);
+      setLeadDocuments(response || {});
+      console.log("🚀 ~ getLeadDocumentsData ~ response:", response);
+    } catch (error) {
+      console.log("🚀 ~ getLeadDocumentsData ~ error:", error);
+      setError(error?.detail || error?.message || 'Failed to fetch lead documents');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    dispatch(fetchLeadDocuments(leadId));
-  }, [dispatch, leadId]);
-  const leadDocuments = useSelector((state) => state.leads.data.leadDocuments);
-  const isLoading = useSelector((state) => state.leads.data.isLoading);
+    getLeadDocumentsData();
+  }, [leadId]);
+
   console.log("🚀 ~ leadDocuments:", leadDocuments);
 
   // Transform leadDocuments data to match the component's expected structure
@@ -479,12 +497,26 @@ const Manager = () => {
   // Show loading state for the entire component
   if (isLoading) {
     return (
-      <div className="flex   justify-center items-center h-screen">
-        <div className="text-center ">
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" />
           <p className="text-gray-600 text-lg font-medium">
-            Loading messages...
+            Loading documents...
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+          <Button onClick={getLeadDocumentsData}>Retry</Button>
         </div>
       </div>
     );

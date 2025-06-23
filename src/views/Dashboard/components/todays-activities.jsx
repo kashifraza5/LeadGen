@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Check, MessageSquare, Plus, Phone, Loader2 } from "lucide-react"
-import { dashboardApi } from "@/services/dashboard-api"
 
 /**
  * @typedef {Object} Activity
@@ -21,6 +20,121 @@ import { dashboardApi } from "@/services/dashboard-api"
  * @property {"check" | "plus" | "message" | "phone"} icon
  */
 
+// Static today's activities data
+const todaysActivities = [
+  {
+    id: "1",
+    user: {
+      name: "Sarah Johnson",
+      initials: "SJ",
+    },
+    action: "Updated lead status to Qualified",
+    time: "10:45 AM",
+    lead: {
+      name: "Michael Thompson",
+    },
+    icon: "check",
+  },
+  {
+    id: "2",
+    user: {
+      name: "David Wilson",
+      initials: "DW",
+    },
+    action: "Added notes to lead",
+    time: "9:30 AM",
+    lead: {
+      name: "Jennifer Adams",
+      note: "Client interested in premium package. Schedule follow-up next week.",
+    },
+    icon: "plus",
+  },
+  {
+    id: "3",
+    user: {
+      name: "Alex Rodriguez",
+      initials: "AR",
+    },
+    action: "Completed call with lead",
+    time: "8:15 AM",
+    lead: {
+      name: "Robert Chen",
+      note: "Duration: 15 minutes",
+    },
+    icon: "phone",
+  },
+  {
+    id: "4",
+    user: {
+      name: "Emily Parker",
+      initials: "EP",
+    },
+    action: "Scheduled a meeting with",
+    time: "7:45 AM",
+    lead: {
+      name: "Samantha Lee",
+      note: "Scheduled for Tomorrow, 2:00 PM",
+    },
+    icon: "message",
+  },
+  {
+    id: "5",
+    user: {
+      name: "Mike Chen",
+      initials: "MC",
+    },
+    action: "Created new lead",
+    time: "6:30 AM",
+    lead: {
+      name: "Lisa Anderson",
+      note: "Lead from website contact form",
+    },
+    icon: "plus",
+  },
+  {
+    id: "6",
+    user: {
+      name: "Rachel Green",
+      initials: "RG",
+    },
+    action: "Sent follow-up email to",
+    time: "5:15 AM",
+    lead: {
+      name: "Tom Hanks",
+      note: "Email: Q4 Newsletter follow-up",
+    },
+    icon: "message",
+  },
+  {
+    id: "7",
+    user: {
+      name: "John Smith",
+      initials: "JS",
+    },
+    action: "Qualified lead",
+    time: "4:00 AM",
+    lead: {
+      name: "Emma Wilson",
+      note: "Budget confirmed, ready for proposal",
+    },
+    icon: "check",
+  },
+  {
+    id: "8",
+    user: {
+      name: "Maria Garcia",
+      initials: "MG",
+    },
+    action: "Completed demo call with",
+    time: "3:20 AM",
+    lead: {
+      name: "Chris Evans",
+      note: "Demo duration: 45 minutes, very interested",
+    },
+    icon: "phone",
+  },
+]
+
 export function TodaysActivities() {
   const [activities, setActivities] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -36,8 +150,9 @@ export function TodaysActivities() {
     setError(null)
 
     try {
-      const data = await dashboardApi.getTodaysActivities(10)
-      setActivities(data)
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 400))
+      setActivities(todaysActivities)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch activities")
     } finally {

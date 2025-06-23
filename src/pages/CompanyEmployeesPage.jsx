@@ -1,6 +1,6 @@
-import  React from "react"
+import React from "react"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { AppLayout } from "@/components/layout/app-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -28,8 +28,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Send, Plus } from "lucide-react"
-import { useCompanyEmployeesStore } from "@/store/company-employees-store"
-import { createEmployeeData, inviteEmployeeData } from "@/services/company-employees-api"
 
 export default function CompanyEmployeesPage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -54,28 +52,72 @@ export default function CompanyEmployeesPage() {
     message: "",
   })
 
-  const {
-    employees,
-    stats,
-    isLoadingEmployees,
-    isLoadingStats,
-    isCreatingEmployee,
-    isInvitingEmployee,
-    employeesError,
-    statsError,
-    createError,
-    inviteError,
-    fetchEmployees,
-    fetchStats,
-    createEmployee,
-    inviteEmployee,
-    clearErrors,
-  } = useCompanyEmployeesStore()
+  // Employees Data
+  const employees = [
+    {
+      id: 1,
+      name: "John Smith",
+      email: "john.smith@acme.com",
+      phone: "+1 (555) 123-4567",
+      role: "Senior Advisor",
+      status: "Active",
+      location: "New York, NY",
+      joinDate: "2022-03-15",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: 2,
+      name: "Sarah Johnson",
+      email: "sarah.johnson@acme.com",
+      phone: "+1 (555) 234-5678",
+      role: "Lead Advisor",
+      status: "Active",
+      location: "Los Angeles, CA",
+      joinDate: "2021-08-22",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: 3,
+      name: "Mike Davis",
+      email: "mike.davis@acme.com",
+      phone: "+1 (555) 345-6789",
+      role: "Junior Advisor",
+      status: "On Leave",
+      location: "Chicago, IL",
+      joinDate: "2023-01-10",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: 4,
+      name: "Emily Chen",
+      email: "emily.chen@acme.com",
+      phone: "+1 (555) 456-7890",
+      role: "Advisor",
+      status: "Active",
+      location: "San Francisco, CA",
+      joinDate: "2022-11-05",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: 5,
+      name: "David Wilson",
+      email: "david.wilson@acme.com",
+      phone: "+1 (555) 567-8901",
+      role: "Support Advisor",
+      status: "Active",
+      location: "Austin, TX",
+      joinDate: "2021-06-18",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+  ]
 
-  useEffect(() => {
-    fetchEmployees()
-    fetchStats()
-  }, [fetchEmployees, fetchStats])
+  // Employee Stats Data
+  const stats = {
+    total: 47,
+    active: 45,
+    onLeave: 2,
+    growth: 12,
+  }
 
   const filteredEmployees = employees.filter((employee) => {
     const matchesSearch =
@@ -118,40 +160,32 @@ export default function CompanyEmployeesPage() {
 
   const handleAddEmployee = async (e) => {
     e.preventDefault()
-    await createEmployee(addEmployeeForm)
-    if (!createError) {
-      setIsAddEmployeeOpen(false)
-      setAddEmployeeForm({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        role: "",
-        location: "",
-      })
-    }
+    // Simulate adding employee
+    console.log("Adding employee:", addEmployeeForm)
+    setIsAddEmployeeOpen(false)
+    setAddEmployeeForm({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      role: "",
+      location: "",
+    })
   }
 
   const handleInviteEmployee = async (e) => {
     e.preventDefault()
-    await inviteEmployee(inviteEmployeeForm)
-    if (!inviteError) {
-      setIsInviteEmployeeOpen(false)
-      setInviteEmployeeForm({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        role: "",
-        message: "",
-      })
-    }
-  }
-
-  const handleRetry = () => {
-    clearErrors()
-    fetchEmployees()
-    fetchStats()
+    // Simulate inviting employee
+    console.log("Inviting employee:", inviteEmployeeForm)
+    setIsInviteEmployeeOpen(false)
+    setInviteEmployeeForm({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      role: "",
+      message: "",
+    })
   }
 
   return (
@@ -163,7 +197,7 @@ export default function CompanyEmployeesPage() {
             <p className="text-gray-600">Manage your team members and their information</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" disabled={isLoadingEmployees}>
+            <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Export
             </Button>
@@ -179,12 +213,6 @@ export default function CompanyEmployeesPage() {
                 <DialogHeader>
                   <DialogTitle>Add New Employee</DialogTitle>
                 </DialogHeader>
-                {createError && (
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{createError}</AlertDescription>
-                  </Alert>
-                )}
                 <form onSubmit={handleAddEmployee} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -263,8 +291,8 @@ export default function CompanyEmployeesPage() {
                     <Button type="button" variant="outline" onClick={() => setIsAddEmployeeOpen(false)}>
                       Cancel
                     </Button>
-                    <Button type="submit" disabled={isCreatingEmployee}>
-                      {isCreatingEmployee ? "Adding..." : "Add Employee"}
+                    <Button type="submit">
+                      Add Employee
                     </Button>
                   </div>
                 </form>
@@ -282,12 +310,6 @@ export default function CompanyEmployeesPage() {
                 <DialogHeader>
                   <DialogTitle>Invite New Employee</DialogTitle>
                 </DialogHeader>
-                {inviteError && (
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{inviteError}</AlertDescription>
-                  </Alert>
-                )}
                 <form onSubmit={handleInviteEmployee} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -374,8 +396,8 @@ export default function CompanyEmployeesPage() {
                     <Button type="button" variant="outline" onClick={() => setIsInviteEmployeeOpen(false)}>
                       Cancel
                     </Button>
-                    <Button type="submit" disabled={isInvitingEmployee}>
-                      {isInvitingEmployee ? "Sending..." : "Send Invitation"}
+                    <Button type="submit">
+                      Send Invitation
                     </Button>
                   </div>
                 </form>
@@ -384,102 +406,70 @@ export default function CompanyEmployeesPage() {
           </div>
         </div>
 
-        {/* Error Alert */}
-        {(employeesError || statsError) && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="flex items-center justify-between">
-              <span>Failed to load employee data. Please try again.</span>
-              <Button variant="outline" size="sm" onClick={handleRetry}>
-                Retry
-              </Button>
-            </AlertDescription>
-          </Alert>
-        )}
-
         {/* Employee Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {isLoadingStats ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i}>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-8 w-16" />
-                    </div>
-                    <Skeleton className="h-8 w-8 rounded" />
-                  </div>
-                  <Skeleton className="h-4 w-32 mt-2" />
-                </CardContent>
-              </Card>
-            ))
-          ) : stats ? (
-            <>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Total Employees</p>
-                      <p className="text-2xl font-bold">{stats.total}</p>
-                    </div>
-                    <Users className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div className="flex items-center mt-2">
-                    <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
-                    <span className="text-sm text-green-600">+{stats.growth}% growth</span>
-                  </div>
-                </CardContent>
-              </Card>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Employees</p>
+                  <p className="text-2xl font-bold">{stats.total}</p>
+                </div>
+                <Users className="h-8 w-8 text-blue-600" />
+              </div>
+              <div className="flex items-center mt-2">
+                <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
+                <span className="text-sm text-green-600">+{stats.growth}% growth</span>
+              </div>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Active</p>
-                      <p className="text-2xl font-bold">{stats.active}</p>
-                    </div>
-                    <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <div className="h-4 w-4 bg-green-600 rounded-full" />
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-2">
-                    {Math.round((stats.active / stats.total) * 100)}% of total
-                  </p>
-                </CardContent>
-              </Card>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Active</p>
+                  <p className="text-2xl font-bold">{stats.active}</p>
+                </div>
+                <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <div className="h-4 w-4 bg-green-600 rounded-full" />
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                {Math.round((stats.active / stats.total) * 100)}% of total
+              </p>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">On Leave</p>
-                      <p className="text-2xl font-bold">{stats.onLeave}</p>
-                    </div>
-                    <div className="h-8 w-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                      <div className="h-4 w-4 bg-yellow-600 rounded-full" />
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-2">
-                    {Math.round((stats.onLeave / stats.total) * 100)}% of total
-                  </p>
-                </CardContent>
-              </Card>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">On Leave</p>
+                  <p className="text-2xl font-bold">{stats.onLeave}</p>
+                </div>
+                <div className="h-8 w-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <div className="h-4 w-4 bg-yellow-600 rounded-full" />
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                {Math.round((stats.onLeave / stats.total) * 100)}% of total
+              </p>
+            </CardContent>
+          </Card>
 
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Avg. Tenure</p>
-                      <p className="text-2xl font-bold">2.3y</p>
-                    </div>
-                    <Calendar className="h-8 w-8 text-orange-600" />
-                  </div>
-                  <p className="text-sm text-gray-600 mt-2">Company average</p>
-                </CardContent>
-              </Card>
-            </>
-          ) : null}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Avg. Tenure</p>
+                  <p className="text-2xl font-bold">2.3y</p>
+                </div>
+                <Calendar className="h-8 w-8 text-orange-600" />
+              </div>
+              <p className="text-sm text-gray-600 mt-2">Company average</p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Search and Filters */}
@@ -518,87 +508,71 @@ export default function CompanyEmployeesPage() {
             <CardTitle>Employee Directory ({filteredEmployees.length})</CardTitle>
           </CardHeader>
           <CardContent>
-            {isLoadingEmployees ? (
-              <div className="space-y-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex items-center space-x-4 p-4 border rounded">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="space-y-2 flex-1">
-                      <Skeleton className="h-4 w-48" />
-                      <Skeleton className="h-3 w-32" />
-                    </div>
-                    <Skeleton className="h-6 w-20" />
-                    <Skeleton className="h-4 w-24" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Join Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredEmployees.map((employee) => (
-                    <TableRow key={employee.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar>
-                            <AvatarImage src={employee.avatar || "/placeholder.svg"} />
-                            <AvatarFallback>{getInitials(employee.name)}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium">{employee.name}</p>
-                            <p className="text-sm text-gray-600">{employee.email}</p>
-                          </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Employee</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Join Date</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredEmployees.map((employee) => (
+                  <TableRow key={employee.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage src={employee.avatar || "/placeholder.svg"} />
+                          <AvatarFallback>{getInitials(employee.name)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{employee.name}</p>
+                          <p className="text-sm text-gray-600">{employee.email}</p>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-sm">
-                            <Mail className="h-3 w-3 text-gray-400" />
-                            <span>{employee.email}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-sm">
-                            <Phone className="h-3 w-3 text-gray-400" />
-                            <span>{employee.phone}</span>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{employee.role}</TableCell>
-                      <TableCell>{getStatusBadge(employee.status)}</TableCell>
-                      <TableCell>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
                         <div className="flex items-center gap-2 text-sm">
-                          <MapPin className="h-3 w-3 text-gray-400" />
-                          <span>{employee.location}</span>
+                          <Mail className="h-3 w-3 text-gray-400" />
+                          <span>{employee.email}</span>
                         </div>
-                      </TableCell>
-                      <TableCell>{new Date(employee.joinDate).toLocaleDateString()}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="sm">
-                            <Mail className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Phone className="h-3 w-3 text-gray-400" />
+                          <span>{employee.phone}</span>
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
+                      </div>
+                    </TableCell>
+                    <TableCell>{employee.role}</TableCell>
+                    <TableCell>{getStatusBadge(employee.status)}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2 text-sm">
+                        <MapPin className="h-3 w-3 text-gray-400" />
+                        <span>{employee.location}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{new Date(employee.joinDate).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button variant="ghost" size="sm">
+                          <Mail className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       </div>

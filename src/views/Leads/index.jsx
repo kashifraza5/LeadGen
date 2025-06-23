@@ -1,46 +1,50 @@
-import React, { useEffect, useMemo, useRef } from "react"
-import { Search, Download, Plus, ChevronLeft, ChevronRight } from "lucide-react"
+import React, { useEffect, useState, useMemo, useRef } from "react"
+import { Search, Download, Plus, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { useDispatch, useSelector } from "react-redux"
-import { fetchLeads,  clearError } from "./store/dataSlice"
-import { injectReducer } from '@/store/index'
-import reducer from './store'
-import  LeadDetail  from "./components/leads/detail-management/lead-detail"
 import { useNavigate } from "react-router-dom"
-injectReducer('leads', reducer)
+import { getLeads } from "@/services/LeadService"
 
 export default function Leads() {
-  const dispatch = useDispatch()
   const searchTimeoutRef = useRef(null)
   const navigate = useNavigate()
-  // Inject reducer only once when component mounts
-  // useEffect(() => {
-  //   console.log("🚀 ~ useEffect ~ injectReducer")
-  // }, [])
+  
+  // Local state management
+  const [leadsData, setLeadsData] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalLeads, setTotalLeads] = useState(0)
+  const [itemsPerPage] = useState(10)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState("")
+  const [territoryFilter, setTerritoryFilter] = useState("")
 
-  const leadsState = useSelector((state) => state.leads)
-  console.log("🚀 ~ Leads ~ leadsState:", leadsState)
-  
-  const { leads, totalLeads, currentPage, itemsPerPage, statusFilter, territoryFilter, searchQuery, isLoading, error } = useSelector((state) => state.leads?.data || {
-    leads: [],
-    totalLeads: 0,
-    currentPage: 1,
-    itemsPerPage: 10,
-    statusFilter: "",
-    territoryFilter: "",
-    searchQuery: "",
-    isLoading: false,
-    error: null,
-  })
-  console.log("🚀 ~ Leads ~ leads:", leads)
-  
-  // Fetch leads on component mount
+  // Fetch leads on component mount and when filters change
   useEffect(() => {
-    dispatch(fetchLeads({ page: currentPage }))
-  }, [dispatch, currentPage])
+    getLeadsData()
+  }, [currentPage])
+
+  const getLeadsData = async () => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      const response = await getLeads({
+        page: currentPage,
+      })
+      
+      setLeadsData(response.results || [])
+      setTotalLeads(response.count || 0)
+    } catch (error) {
+      console.log("🚀 ~ getLeads ~ error:", error)
+      setError(error?.detail || error?.message || 'Failed to fetch leads')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   // Helper function to format date from API response
   const formatDate = (dateString) => {
@@ -97,7 +101,9 @@ export default function Leads() {
   }, [totalLeads, itemsPerPage])
 
   const handleSearchChange = (e) => {
-    const query = e.target.value    
+    const query = e.target.value
+    setSearchQuery(query)
+    
     // Clear existing timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current)
@@ -105,16 +111,26 @@ export default function Leads() {
     
     // Set new timeout for debounced search
     searchTimeoutRef.current = setTimeout(() => {
-      dispatch(fetchLeads({ searchQuery: query, page: currentPage }))
+      setCurrentPage(1) // Reset to first page when searching
     }, 500)
   }
 
   const handlePageChange = (newPage) => {
-    dispatch(fetchLeads({ page: newPage }))
+    setCurrentPage(newPage)
+  }
+
+  const handleStatusFilterChange = (value) => {
+    setStatusFilter(value === "All Statuses" ? "" : value)
+    setCurrentPage(1) // Reset to first page when filtering
+  }
+
+  const handleTerritoryFilterChange = (value) => {
+    setTerritoryFilter(value === "All Territories" ? "" : value)
+    setCurrentPage(1) // Reset to first page when filtering
   }
 
   const handleClearError = () => {
-    dispatch(clearError())
+    setError(null)
   }
 
   // Cleanup timeout on unmount
@@ -147,7 +163,7 @@ export default function Leads() {
       <div className="p-6">
         <div className="flex justify-between mb-6">
           <div className="flex space-x-4">
-            <Select >
+            <Select value={statusFilter || "All Statuses"} onValueChange={handleStatusFilterChange}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
@@ -164,7 +180,7 @@ export default function Leads() {
               </SelectContent>
             </Select>
 
-            <Select >
+            <Select value={territoryFilter || "All Territories"} onValueChange={handleTerritoryFilterChange}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="All Territories" />
               </SelectTrigger>
@@ -190,11 +206,7 @@ export default function Leads() {
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6 flex justify-between items-center">
             <span>
-              Error loading leads: {
-                typeof error === 'string' 
-                  ? error 
-                  : error?.detail || error?.messages || error?.code || 'Unknown error occurred'
-              }
+              Error loading leads: {error}
             </span>
             <Button variant="ghost" size="sm" onClick={handleClearError}>
               ×
@@ -221,19 +233,19 @@ export default function Leads() {
                   <tr>
                     <td colSpan={7} className="text-center py-8">
                       <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                        <span className="ml-2">Loading leads...</span>
+                        <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                        <span>Loading leads...</span>
                       </div>
                     </td>
                   </tr>
-                ) : leads?.length === 0 ? (
+                ) : leadsData?.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="text-center py-8 text-gray-500">
                       No leads found
                     </td>
                   </tr>
                 ) : (
-                  leads?.map((lead) => (
+                  leadsData?.map((lead) => (
                     <tr key={lead.id} className="border-b last:border-0 hover:bg-gray-50" >
                       <td className="py-4 px-4">
                         <div  className="flex items-center cursor-pointer" onClick={() => navigate(`/leads/${lead.id}`)} >
@@ -272,7 +284,7 @@ export default function Leads() {
 
           <div className="flex items-center justify-between px-4 py-3 border-t">
             <div className="text-sm text-gray-500">
-              Showing {leads?.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
+              Showing {leadsData?.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
               {Math.min(currentPage * itemsPerPage, totalLeads)} of {totalLeads} results
             </div>
             <div className="flex items-center space-x-1">
@@ -281,6 +293,7 @@ export default function Leads() {
                 size="icon"
                 className="h-8 w-8"
                 disabled={currentPage === 1 || isLoading}
+                onClick={() => handlePageChange(currentPage - 1)}
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>

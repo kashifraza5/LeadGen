@@ -17,10 +17,10 @@ const LeadsTable = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [totalLeads, setTotalLeads] = useState(0)
 
-  useEffect(() => {
-    // fetchLeads()
-    dispatch(fetchLeads())
-  }, [filter, territoryFilter, currentPage])
+  // useEffect(() => {
+  //   // fetchLeads()
+  //   dispatch(fetchLeads())
+  // }, [filter, territoryFilter, currentPage])
 
   // const fetchLeads = async () => {
   //   setIsLoading(true)

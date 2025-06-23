@@ -12,27 +12,36 @@ import { AddPhoneModal } from "./add-phone-modal";
 import { AllPhonesModal } from "./all-phones-modal";
 import { AddAddressModal } from "./add-address-modal";
 import { AllAddressesModal } from "./all-addresses-modal";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchLeadDetail, clearError } from "@/views/Leads/store/dataSlice";
 import { getLeadDetail } from "@/services/LeadService";
-import reducer from '@/views/Leads/store'
-import { injectReducer } from '@/store/index'
-injectReducer('leads', reducer)
-
 
 const PersonalInformationTab = () => {
-  const dispatch = useDispatch();
   const params = useParams();
   const leadId = params?.id || "LD-10042";
-  const leadsState = useSelector((state) => state.leads?.data) || {};
-  const leadDetail = leadsState?.leadDetail || {};
-  const isLoading = leadsState?.isLoading || false;
+  
+  // Local state management
+  const [leadDetail, setLeadDetail] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  console.log("🚀 ~ leadDetails:", leadDetail);
+  const getPersonalInformations = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await getLeadDetail(leadId);
+      setLeadDetail(response || {});
+      console.log("🚀 ~ getPersonalInformations ~ response:", response);
+    } catch (error) {
+      console.log("🚀 ~ getPersonalInformations ~ error:", error);
+      setError(error?.detail || error?.message || 'Failed to fetch lead details');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   // Transform API data to match component structure
   const personalInfo = useMemo(() => {
-    if (!leadDetail) {
+    if (!leadDetail || Object.keys(leadDetail).length === 0) {
       return {
         id: leadId,
         user_emails: [],
@@ -141,12 +150,10 @@ const PersonalInformationTab = () => {
   }, []);
 
   useEffect(() => {
-
     if (leadId) {
-      dispatch(fetchLeadDetail(leadId));
+      getPersonalInformations();
     }
-  }, [leadId, dispatch]);
- 
+  }, [leadId]);
 
   // Handle adding a new email
   const handleAddEmail = useCallback(
@@ -286,9 +293,9 @@ const PersonalInformationTab = () => {
 
   const handleRetry = useCallback(() => {
     if (leadId) {
-      dispatch(fetchLeadDetail(leadId));
+      getPersonalInformations();
     }
-  }, [dispatch, leadId]);
+  }, [leadId]);
 
   // Memoized values
   const primaryEmail = useMemo(
@@ -307,7 +314,7 @@ const PersonalInformationTab = () => {
   );
 
   // Show loading state
-  if (leadsState.isLoading && !leadDetail) {
+  if (isLoading && Object.keys(leadDetail).length === 0) {
     return (
       <div className="flex items-center justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -317,15 +324,15 @@ const PersonalInformationTab = () => {
   }
 
   // Show error state
-  if (leadsState.error) {
+  if (error) {
     return (
       <Alert variant="destructive" className="mb-6">
         <AlertDescription className="flex items-center justify-between">
-          {leadsState.error}
+          {error}
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => dispatch(clearError())}
+            onClick={() => setError(null)}
           >
             <X className="h-4 w-4" />
           </Button>

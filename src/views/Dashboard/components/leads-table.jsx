@@ -5,8 +5,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
-import { dashboardApi } from "@/services/dashboard-api"
-import { DashboardContent } from './Content'
 
 /**
  * @typedef {Object} Lead
@@ -18,6 +16,100 @@ import { DashboardContent } from './Content'
  * @property {"New" | "Contacted" | "Qualified" | "Follow-up" | "Disqualified"} status
  * @property {string} addedTime
  */
+
+// Static recent leads data
+const recentLeads = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "john.doe@example.com",
+    phone: "(555) 123-4567",
+    source: "Website",
+    status: "New",
+    addedTime: "Added 2 hours ago",
+  },
+  {
+    id: "2",
+    name: "Jane Smith",
+    email: "jane.smith@example.com",
+    phone: "(555) 987-6543",
+    source: "Referral",
+    status: "Contacted",
+    addedTime: "Added 3 hours ago",
+  },
+  {
+    id: "3",
+    name: "Bob Johnson",
+    email: "bob.johnson@example.com",
+    phone: "(555) 456-7890",
+    source: "LinkedIn",
+    status: "Qualified",
+    addedTime: "Added 4 hours ago",
+  },
+  {
+    id: "4",
+    name: "Alice Williams",
+    email: "alice.williams@example.com",
+    phone: "(555) 789-0123",
+    source: "Event",
+    status: "Disqualified",
+    addedTime: "Added 5 hours ago",
+  },
+  {
+    id: "5",
+    name: "Charlie Brown",
+    email: "charlie.brown@example.com",
+    phone: "(555) 321-6547",
+    source: "Website",
+    status: "New",
+    addedTime: "Added 6 hours ago",
+  },
+  {
+    id: "6",
+    name: "Diana Prince",
+    email: "diana.prince@example.com",
+    phone: "(555) 654-3210",
+    source: "Social Media",
+    status: "Follow-up",
+    addedTime: "Added 7 hours ago",
+  },
+  {
+    id: "7",
+    name: "Ethan Hunt",
+    email: "ethan.hunt@example.com",
+    phone: "(555) 987-1234",
+    source: "Email Campaign",
+    status: "New",
+    addedTime: "Added 8 hours ago",
+  },
+  {
+    id: "8",
+    name: "Fiona Gallagher",
+    email: "fiona.gallagher@example.com",
+    phone: "(555) 456-1237",
+    source: "Website",
+    status: "Contacted",
+    addedTime: "Added 9 hours ago",
+  },
+  {
+    id: "9",
+    name: "George Lucas",
+    email: "george.lucas@example.com",
+    phone: "(555) 789-4561",
+    source: "Referral",
+    status: "Qualified",
+    addedTime: "Added 10 hours ago",
+  },
+  {
+    id: "10",
+    name: "Helen Keller",
+    email: "helen.keller@example.com",
+    phone: "(555) 321-9876",
+    source: "Event",
+    status: "New",
+    addedTime: "Added 11 hours ago",
+  },
+]
 
 export function LeadsTable() {
   const [leads, setLeads] = useState([])
@@ -36,8 +128,9 @@ export function LeadsTable() {
     setError(null)
 
     try {
-      const data = await dashboardApi.getRecentLeads(10)
-      setLeads(data)
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500))
+      setLeads(recentLeads)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch leads")
     } finally {
